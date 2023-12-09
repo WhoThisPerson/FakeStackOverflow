@@ -382,8 +382,9 @@ app.get("/api/users", async (req, res) => {
 //         console.error("Failed to post user", error);
 //     }
 // })
+
 //User Login
-app.post("/api/users", async (req, res) => {
+app.post("/api/users/login", async (req, res) => {
     try {
         const { email, password } = req.body;
         //Find User by Email
@@ -405,6 +406,16 @@ app.post("/api/users", async (req, res) => {
     } catch (error) {
         console.log("Failed to Login");
     }
+})
+
+app.get("/api/users/login", async (req, res) => {
+    try {
+        const users = await User.find();
+        res.json(users);
+
+    } catch (error) {
+        console.error("Failed to fetch questions", error);
+    };
 })
 
 
