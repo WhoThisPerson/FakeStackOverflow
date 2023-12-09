@@ -56,7 +56,6 @@ app.get("/api/questions", async (req, res) => {
 
 
         const sortedQuestions = questions;
-        console.log(sortedQuestions);
 
         res.json(sortedQuestions);
     } catch (error) {
