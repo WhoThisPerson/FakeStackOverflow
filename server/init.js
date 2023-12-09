@@ -77,7 +77,6 @@ function adminCreate(email, password) {
       questions_asked: [],
       answers_posted: [],
       tags_created: [],
-      comments_posted: [],
       reputation: 50,
       date_created: new Date(),
     };
@@ -85,7 +84,7 @@ function adminCreate(email, password) {
     return admin.save();
 }
 
-function userCreate(username, email, password, role, questions_asked, answers_posted, tags_created, comments_posted, reputation, date_created) {
+function userCreate(username, email, password, role, questions_asked, answers_posted, tags_created, reputation, date_created) {
   userDetail = {
     username: username,
     email: email,
@@ -94,7 +93,6 @@ function userCreate(username, email, password, role, questions_asked, answers_po
     questions_asked: questions_asked,
     answers_posted: answers_posted,
     tags_created: tags_created,
-    comments_posted: comments_posted,
     reputation: reputation,
     date_created: date_created,
   };
@@ -115,13 +113,13 @@ function commentCreate(commenter, text, votes) {
 const populate = async () => {
   //User creation
   let admin = await adminCreate(adminEmail, adminPass);
-  let user1 = await userCreate("Joji John", "jojijohn@email.com", "jojijohn", "User", [], [], [], [], 0, new Date());
-  let user2 = await userCreate("saltyPeter", "saltyPeter@email.com", "saltyPeter", "User", [], [], [], [], 0, new Date());
-  let user3 = await userCreate("hamkalo", "hamkalo@email.com", "hamkalo", "User", [], [], [], [], 0, new Date());
-  let user4 = await userCreate("azad", "azad@email.com", "azad","User", [], [], [], [], 0, new Date());
-  let user5 = await userCreate("abaya", "abaya@email.com", "abaya", "User", [], [], [], [], 0, new Date());
-  let user6 = await userCreate("alia", "alia@email.com", "alia", "User", [], [], [], [], 0, new Date());
-  let user7 = await userCreate("sana", "sana@email.com", "sana", "User", [], [], [], [], 0, new Date());
+  let user1 = await userCreate("Joji John", "jojijohn@email.com", "jojijohn", "User", [], [], [], 0, new Date());
+  let user2 = await userCreate("saltyPeter", "saltyPeter@email.com", "saltyPeter", "User", [], [], [], 0, new Date());
+  let user3 = await userCreate("hamkalo", "hamkalo@email.com", "hamkalo", "User", [], [], [], 0, new Date());
+  let user4 = await userCreate("azad", "azad@email.com", "azad","User", [], [], [], 0, new Date());
+  let user5 = await userCreate("abaya", "abaya@email.com", "abaya", "User", [], [], [], 0, new Date());
+  let user6 = await userCreate("alia", "alia@email.com", "alia", "User", [], [], [], 0, new Date());
+  let user7 = await userCreate("sana", "sana@email.com", "sana", "User", [], [], [], 0, new Date());
   //Comment Creation
   let c1 = await commentCreate(user1, "Comment from Joji John", 0);
   let c2 = await commentCreate(user2, "Comment from saltyPeter.", 0);
@@ -163,7 +161,7 @@ const populate = async () => {
     {$push: 
       {questions_asked: q1, 
       tags_created: [t1, t2], 
-      comments_posted: c1}
+      }
     }
   );
   await User.updateOne(
@@ -171,13 +169,13 @@ const populate = async () => {
     {$push: 
       {questions_asked: q2, 
       tags_created: [t2, t3], 
-      comments_posted: c2}
+      }
     }
   );
   await User.updateOne(
     {_id: user3._id}, 
     {$push: 
-      {answers_posted: a1, comments_posted: c3}
+      {answers_posted: a1}
     }
   );
   await User.updateOne(
