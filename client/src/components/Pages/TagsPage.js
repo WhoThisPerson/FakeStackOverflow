@@ -22,7 +22,7 @@ export default function TagsPage({ navigate }) {
 
     //go to tag Results page
     const goToResults = ((tag) => {
-        return navigate("TagResults", { tag });
+        return navigate("TagResults", "HomePage", { tag });
     });
 
     //get the number of questions with this tag

@@ -54,7 +54,9 @@ app.get("/api/questions", async (req, res) => {
             questions = questions.filter((question) => question.answers.length === 0);
         }
 
+
         const sortedQuestions = questions;
+        console.log(sortedQuestions);
 
         res.json(sortedQuestions);
     } catch (error) {

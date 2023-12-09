@@ -31,12 +31,12 @@ export default function QuestionContentPage({navigate, parameters}) {
 
     //to go to the ask question page
     const askQuestion = () => {
-        navigate("AskQuestion", null);
+        navigate("AskQuestion", "HomePage", null);
     }
 
     //to go to the post answer page
     const postAnswer = () => {
-        navigate("PostAnswerPage", {question});
+        navigate("PostAnswerPage", "HomePage", {question});
     }
 
     return (

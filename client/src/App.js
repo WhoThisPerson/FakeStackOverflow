@@ -28,6 +28,10 @@ export default class App extends React.Component {
     };
   }
 
+  //newPage is the page destination 
+  //newCurrentMainPage is to display sidebar when needed 
+    //put "HomePage" for any pages outside of Welcome
+  //newParameters is for the values being brought to the newPage
   navigate = (newPage, newCurrentMainPage, newParameters) => {
     this.setState({
       currentPage: newPage,
