@@ -39,7 +39,7 @@ export default function LoginUserPage({navigate}) {
         //Make request to log in
         try {
 
-            const response = await axios.post("http://localhost:8000/api/users", {email: email, password: password});
+            const response = await axios.post("http://localhost:8000/api/users/login", {email: email, password: password});
   
             if (response.data == true) {
                 //Go to HomePage

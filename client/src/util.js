@@ -29,3 +29,8 @@ export function findLinks(text) {
 
     return result.map((link) => link.groups);
 }
+
+const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+export function validEmail(email) {
+    return (email.match(emailRegex) !== null);
+}

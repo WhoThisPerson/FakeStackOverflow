@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import axios from "axios";
+import { validEmail } from "../../util";
 
 export default function RegisterUserPage({navigate}) {
     //State variables to store user info
@@ -42,6 +43,24 @@ export default function RegisterUserPage({navigate}) {
             alert("Password Verification cannot be empty");
             return false;
         }
+        //Check for Valid Email
+        if (!validEmail(email)) {
+            alert("Not a valid email");
+            return false;
+        }
+        //Check that passwords are the same
+        if (secretPass !== passVer) {
+            alert("Passwords do not match. Please try again.");
+            return false;
+        }
+        const tempEmail = email.toLowerCase();
+        const tempUser = username.toLowerCase();
+        const tempPass = secretPass.toLowerCase();
+        //Password does not contain email or username
+        if(tempPass.includes(tempEmail) || (tempPass.includes(tempUser))) {
+            alert("Password cannot contain Email or Username");
+            return false;
+        }
         return true;
     })
 
@@ -50,13 +69,27 @@ export default function RegisterUserPage({navigate}) {
     // No two users with same email
     // Email valid
     // Password cannot contain username or email id
-    const finishRegistering = (event) => {
+    const finishRegistering = async (event) => {
         event.preventDefault();
         event.stopPropagation();
         //Field validation
         if (!validInput()) return;
-        //Go to Login Page
-        navigate("", "LoginUser", null);
+
+        try {
+            //Make request
+            const response = await axios.post("http://localhost:8000/api/users/", {username: username, email: email, password: secretPass});
+            //Confirm that user does not exist
+            if (response.data == "User does not exist") {
+                //Go to Login Page
+                navigate("", "LoginUser", null);
+            } else {
+                alert("Email already exists");
+                return;
+            }
+        } catch (error) {
+            console.log("Failed to register.");
+            return;
+        }
     }
     
     return (
