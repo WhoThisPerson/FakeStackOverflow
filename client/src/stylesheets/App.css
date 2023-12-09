@@ -1,1 +1,271 @@
-/* Add your CSS here */
+/* Welcome Page elements*/
+.welcome-page-container{
+    display: flex;
+}
+
+/* Header Element */
+.header {
+    background-color: lightgrey;
+    padding: 15px;
+    border-top: 1px solid black;
+    border-bottom: 1px solid black;
+}
+.title {
+    text-align: center;
+    font-size: xx-large;
+}
+#search-box {
+    text-align: right;
+    margin-right: 2%;
+    margin-top: -4.5%;
+}
+#search-input {
+    padding: 10px;
+    width: 300px;
+    font-size: large;
+}
+/* Main page Body*/
+.main {
+    display: flex;
+    min-height: 86vh;
+}
+.left-margin {
+    flex: 1;
+    overflow: auto;
+    border-right: 2px dashed gray;
+}
+.question-link-container, .tag-link-container, .user-link-container {
+    text-align: center;
+    margin-top: 40%;
+    padding: 10px;
+}
+#question-link, #tag-link, #user-link {
+    font-size: x-large;
+    text-decoration: none;
+}
+.right-margin {
+    flex: 4;
+}
+/*Right Margin Content*/
+.right-margin-header {
+    border-bottom: 2px dashed gray;
+    display: flex;
+    padding: 2%;
+}
+
+.right-margin-header-left, .right-margin-header-right {
+    flex: 1;
+}
+
+.right-margin-header-title {
+    font-size: xx-large;
+}
+.right-margin-header-q-counter {
+    font-size: x-large;
+}
+.ask-question-button-container {
+    text-align: right;
+    margin-right: 5%;
+    margin-top: 2%;
+}
+.ask-question-button {
+    padding: 15px;
+    color: white;
+    background-color: #0096ff;
+    font-size: large;
+    border-radius: 5px;
+    cursor: pointer;
+}
+.right-margin-three-buttons-container {
+    margin-top: 5%;
+}
+
+.newest, .active, .unanswered {
+    font-size: large;
+    border: 2px solid #000;
+    cursor: pointer;
+}
+.right-margin-questions {
+    border-bottom: 2px dashed gray;
+    display: flex;
+    padding: 1%;
+}
+.right-margin-left {
+    flex: 0.7;
+}
+.right-margin-middle {
+    flex: 2;
+}
+.right-margin-right {
+    flex: 2;
+    display: flex;
+}
+.right-margin-questions-answercount {
+    margin-left: 20%;
+    margin-top: 20%;
+}
+.right-margin-questions-viewcount {
+    margin-left: 20%;
+    margin-bottom: 20%;
+}
+.right-margin-questions-title {
+    font-size: x-large;
+    margin-top: 5%;
+    text-decoration: none;
+}
+.question-tag {
+    font-size: large;
+    border-radius: 5px;
+    border-color: #000;
+    background-color: gray;
+    color: white;
+    margin-left: 5px;
+    margin-top: 5px;
+    cursor: pointer;
+}
+
+.right-margin-questions-askedBy {
+    color: red;
+    margin-top: 6%;
+    margin-left: 20%;
+}
+.right-margin-questions-askDate {
+    margin-top: 6%;
+    margin-left: 1%;
+}
+/*Ask Question Page*/
+.ask-question-page {
+    padding: 2%;
+}
+#title-input {
+    width: 300px;
+    height: 50px;
+    font-size: large;
+}
+#question-input {
+    width: 300px;
+    height: 200px;
+}
+#tags-input, #username-input {
+    font-style: italic;
+    width: 300px;
+    height: 25px;
+    font-size: medium;
+}
+#post-question-button {
+    color: white;
+    background-color: #0096ff;
+    height: 50px;
+    width: 100px;
+    margin-top: 5%;
+}
+.question-req {
+    font-style: italic;
+}
+.mandatory-text {
+    color: red;
+    margin-left: 50%;
+}
+/*Question Content Page*/
+.question-content-container {
+    display: flex;
+    border-bottom: 2px dashed gray;
+}
+.question-content-left {
+    flex: 1;
+    padding: 2%;
+}
+.question-content-middle {
+    flex: 4;
+    padding: 2%;
+}
+.question-content-right {
+    flex: 2;
+    padding: 3%;
+}
+.question-content-answer-count, .question-content-title {
+    font-size: x-large;
+    font-weight: bold;
+}
+.question-content-view-count {
+    font-size: x-large;
+    font-weight: bold;
+    margin-top: 90%;
+}
+.question-content-text {
+    margin-top: 20%;
+}
+.question-content-askedBy {
+    color: red;
+    margin-top: 50%;
+}
+.answer-container {
+    display: flex;
+    border-bottom: 2px dashed gray;
+    padding: 2%;
+}
+.answer-left {
+    flex: 4;
+}
+.answer-right {
+    flex: 1;
+    padding: 1%;
+}
+.answer-user {
+    color: green;
+}
+.answer-question-button-container {
+    padding: 2%;
+}
+.answer-question-button {
+    color: white;
+    background-color: #0096ff;
+    padding: 15px;
+    font-size: large;
+    border-radius: 5px;
+    cursor: pointer;
+}
+/*Post Answer Page*/
+.post-answer-page {
+    padding: 5%;
+}
+
+#post-answer-page-username-input {
+    height: 45px;
+    width: 500px;
+    font-size: large;
+}
+
+#post-answer-page-text-input {
+    height: 200px;
+    width: 500px;
+    font-size: large;
+}
+
+.post-answer-button-container {
+    margin-top: 3%;
+}
+.post-answer-button {
+    color: white;
+    background-color: #0096ff;
+    padding: 15px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: large;
+}
+/*Tags Page*/
+.tags-container {
+    padding: 1%;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: flex-start;
+}
+
+.tag-container {
+    flex-basis: calc(33.33% - 10%);
+    padding: 1%;
+    margin: 1%;
+    border: 2px dashed gray;
+    box-sizing: border-box;
+    text-align: center;
+}
