@@ -2,9 +2,9 @@
 Add design docs in *images/*
 
 ## Instructions to setup and run project
-Required Downloads:
-Client: npm install axios
-Server: npm install mongoose express express-session cookie-parser cors bcrpyt nodemon
+- Required Downloads:
+- Client: npm install axios
+- Server: npm install mongoose express express-session cookie-parser cors bcrpyt nodemon
 
 ## Team Member 1 Contribution (B1 Qirong Wu)
 - Looks
