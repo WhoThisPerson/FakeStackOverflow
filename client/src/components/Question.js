@@ -11,7 +11,7 @@ export default function Question({question, navigate}) {
         updateViewCount();
         //Update view count real time
         question.views += 1;
-        navigate("QuestionContentPage", {question});
+        navigate("QuestionContentPage", "HomePage", {question});
     }
 
     const updateViewCount = async () => {
