@@ -345,7 +345,7 @@ app.get("/api/questions/:id", async (req, res) => {
     }
 });
 
-//Users Get Request
+//Users Get All Request
 app.get("/api/users", async (req, res) => {
     try {
         const users = await User.find();
@@ -355,35 +355,57 @@ app.get("/api/users", async (req, res) => {
     }
 })
 
-//Users Post Request
-app.post("/api/users/register", async (req, res) => {
+//Users Post Register Request
+// app.post("/api/users", async (req, res) => {
+//     try {
+//         const { username, email, password } = req.body;
+//         //Hash password
+//         const salt = await bcrypt.genSalt();
+//         const hashedPass = await bcrypt.hash(password, salt);
+//         //Create new user
+//         const user = new User({
+//             username: username,
+//             email: email,
+//             password: hashedPass,
+//             role: "User",
+//             questions_asked: [],
+//             answers_posted: [],
+//             tags_created: [],
+//             reputation: 0,
+//             date_created: new Date(),
+//         })
+//         //Save user
+//         await user.save();
+//         res.send(user);
+
+//     } catch (error) {
+//         console.error("Failed to post user", error);
+//     }
+// })
+//User Login
+app.post("/api/users", async (req, res) => {
     try {
-        const { username, email, password } = req.body;
-        //Hash password
-        const salt = await bcrypt.genSalt();
-        const hashedPass = await bcrypt.hash(password, salt);
-        //Create new user
-        const user = new User({
-            username: username,
-            email: email,
-            password: hashedPass,
-            role: "User",
-            questions_asked: [],
-            answers_posted: [],
-            tags_created: [],
-            reputation: 0,
-            date_created: new Date(),
-        })
-        //Save user
-        await user.save();
-        res.send(user);
+        const { email, password } = req.body;
+        //Find User by Email
+        const user = await User.findOne({ email });
+        //Check if they exist
+        if (!user) {
+            res.send("User does not exist");
+        }
+        //Check password matches stored password
+        const response = await bcrypt.compare(password, user.password);
+        
+        if (response) {
+            console.log("Login Success");
+        } else {
+            console.log("Failed to Login");
+        }
+        res.send(response);
 
     } catch (error) {
-        console.error("Failed to post user", error);
+        console.log("Failed to Login");
     }
 })
-
-
 
 
 //Start Server
