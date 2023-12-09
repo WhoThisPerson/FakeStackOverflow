@@ -209,6 +209,135 @@ app.get("/api/search", async (req, res) => {
     }
 
 })
+
+//Search Results Get Request 
+app.get("/api/searchbutton", async (req, res) => {
+    try {
+
+        const searched_tags = req.query["searched_tags"];
+        const searched_words = req.query["searched_words"];
+
+        //stored all the questions with the proper tags
+        const tagged_questions = [];
+
+        //check if any tags were searched
+        if (searched_tags != undefined) {
+            //go thru every tag 
+            for (let word of searched_tags) {
+                //to get rid of the [] and case sensitivity 
+                word = word.substring(1, word.length - 1).toLowerCase();
+                //find the tag in the collection (not case sensitive)
+                let tag = await Tag.find({ name: { $regex: word, $options: "i" } });
+
+                //check if the tag exists
+                //go to the next searched tag if doesn't exist 
+                //find returns an array, so checking if the length is 0 works out
+                if (tag.length == 0)
+                    continue;
+
+                //get the tag ID
+                const tagID = tag[0]._id;
+
+                //get all questions with the tag
+                const questionsInTag = await Question.find({ tags: { _id: tagID } })
+
+                manageSearchedQuestions(tagged_questions, questionsInTag);
+
+            }
+        }
+
+
+        //store all the questions with the word in its text / title
+        const searched_questions = [];
+        //get every question
+        const questionsCollection = await Question.find();
+
+        //check if any words were searched 
+        if (searched_words != undefined) {
+            //search the Database for each word 
+            for (let word of searched_words) {
+                //returns all questions with the word in the title 
+                //for each question, split the title by whitespace 
+                //see if any of the words in the title is the word being searched 
+                //ToLowerCase() is to avoid case sensitivity 
+
+                let titlesWithWord = questionsCollection.filter(question => question.title.split(" ")
+                    .some((wordInTitle) => wordInTitle.toLowerCase() == word));
+
+                //compares searchedQuestions to titlesWithWord to see if there are any duplicates
+                manageSearchedQuestions(searched_questions, titlesWithWord);
+
+                //returns all questions with the word in the text (same way as with title)
+                let textWithWord = questionsCollection.filter(question => question.text.split(" ")
+                    .some((wordInText) => wordInText.toLowerCase() == word));
+
+
+                //same as before to make sure textWithWords is all new 
+                manageSearchedQuestions(searched_questions, textWithWord);
+            }
+        }
+
+
+        //get the ids of all questions with a searched tag
+        const result_ids = [];
+        for (let question of tagged_questions)
+            result_ids.push(question._id);
+
+        //go thru every question with a searched word 
+        for (const question of searched_questions) {
+            //check if the question hasn't been chosen already in tagged question 
+            //add the question's id if new
+            if (!tagged_questions.some(tagged => tagged._id.equals(question._id)))
+                result_ids.push(question._id);
+        }
+
+
+        //make an new query that will populate the tags and answers 
+        let result = await Question.find({ _id: { $in: result_ids } })
+            .populate("tags")
+            .populate("answers");
+
+        //Default sorting to Newest
+        const sortBy = req.query.sortBy || "Newest";
+        //New Posted Questions at Top
+        if (sortBy === "Newest") {
+            
+            result = result.sort((a, b) => {
+                return (b.ask_date_time - a.ask_date_time);
+            });
+        } else if (sortBy === "Active") {
+
+            result = result.sort((a, b) => {
+                const mostRecentAAnswer = a.answers.length > 0 ? a.answers[0].ans_date_time : null;
+                const mostRecentBAnswer = b.answers.length > 0 ? b.answers[0].ans_date_time : null;
+
+                if (mostRecentAAnswer && mostRecentBAnswer) {
+                    return (mostRecentBAnswer - mostRecentAAnswer);
+                } else if (mostRecentBAnswer) {
+                    return 1;
+                } else if (mostRecentAAnswer) {
+                    return -1;
+                } 
+            })
+
+        } else if (sortBy === "Unanswered") {
+            result = result.filter((question) => question.answers.length === 0);
+        }
+
+
+        const sortedQuestions = result;
+
+        res.json(sortedQuestions);
+
+        //res.json(result);
+    }
+
+    catch (error) {
+        console.error("Failed to get search results", error);
+    }
+
+})
+
 //Question Post Request
 app.post("/api/questions", async (req, res) => {
     try {

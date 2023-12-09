@@ -22,14 +22,17 @@ export default function SearchResultsPage( { navigate, parameters } ) {
     }, [searched_tags, searched_words]);
 
     const fetchQuestions = async (sortBy) => {
-        try {
-            const response = await axios.get(`http://localhost:8000/api/questions?sortBy=${sortBy}`)
-            setQuestions(response.data);
-
-        } catch (error) {
-            console.error("Failed to get Question data:", error);
+        
+            axios.get(`http://localhost:8000/api/searchbutton?sortBy=${sortBy}`, { params: {searched_tags, searched_words }} )
+            .then(response => {
+                console.log(response.data);
+                setQuestions(response.data);
+            })
+            .catch(error => {
+                console.error("Failed to get Question data:", error);
+            })
         }
-    }
+    
 
     return (
         <div>
