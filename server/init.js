@@ -12,14 +12,15 @@ if (userArgs[0] == null || userArgs[1] == null) {
 
 let adminEmail = userArgs[0];
 let adminPass = userArgs[1];
-
-
+//Required libraries
+const bcrypt = require('bcrypt');
+//Model imports
 let Tag = require('./models/tags')
 let Answer = require('./models/answers')
 let Question = require('./models/questions')
 let User = require('./models/users')
 let Comment = require('./models/comments');
-
+//DB connection
 let mongoose = require('mongoose');
 let mongoDB = "mongodb://127.0.0.1:27017/fake_so";
 mongoose.connect(mongoDB, {useNewUrlParser: true, useUnifiedTopology: true});
@@ -110,16 +111,22 @@ function commentCreate(commenter, text, votes) {
   return comment.save();
 }
 
+async function hashPassword(password) {
+    const salt = await bcrypt.genSalt();
+    const hashedPass = await bcrypt.hash(password, salt);
+    return hashedPass;
+}
+
 const populate = async () => {
   //User creation
-  let admin = await adminCreate(adminEmail, adminPass);
-  let user1 = await userCreate("Joji John", "jojijohn@email.com", "jojijohn", "User", [], [], [], 0, new Date());
-  let user2 = await userCreate("saltyPeter", "saltyPeter@email.com", "saltyPeter", "User", [], [], [], 0, new Date());
-  let user3 = await userCreate("hamkalo", "hamkalo@email.com", "hamkalo", "User", [], [], [], 0, new Date());
-  let user4 = await userCreate("azad", "azad@email.com", "azad","User", [], [], [], 0, new Date());
-  let user5 = await userCreate("abaya", "abaya@email.com", "abaya", "User", [], [], [], 0, new Date());
-  let user6 = await userCreate("alia", "alia@email.com", "alia", "User", [], [], [], 0, new Date());
-  let user7 = await userCreate("sana", "sana@email.com", "sana", "User", [], [], [], 0, new Date());
+  let admin = await adminCreate(adminEmail, await hashPassword(adminPass));
+  let user1 = await userCreate("Joji John", "jojijohn@email.com", await hashPassword("jojijohn"), "User", [], [], [], 0, new Date());
+  let user2 = await userCreate("saltyPeter", "saltyPeter@email.com", await hashPassword("saltyPeter"), "User", [], [], [], 0, new Date());
+  let user3 = await userCreate("hamkalo", "hamkalo@email.com", await hashPassword("hamkalo"), "User", [], [], [], 0, new Date());
+  let user4 = await userCreate("azad", "azad@email.com", await hashPassword("azad"),"User", [], [], [], 0, new Date());
+  let user5 = await userCreate("abaya", "abaya@email.com", await hashPassword("abaya"), "User", [], [], [], 0, new Date());
+  let user6 = await userCreate("alia", "alia@email.com", await hashPassword("alia"), "User", [], [], [], 0, new Date());
+  let user7 = await userCreate("sana", "sana@email.com", await hashPassword("sana"), "User", [], [], [], 0, new Date());
   //Comment Creation
   let c1 = await commentCreate(user1, "Comment from Joji John", 0);
   let c2 = await commentCreate(user2, "Comment from saltyPeter.", 0);
