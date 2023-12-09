@@ -9,9 +9,11 @@ export default function ButtonsContainer({navigate, fetchQuestions}) {
     //Go back to Home with Newest Filter On
     const newestButton = () => {
         fetchQuestions("Newest");
+
     };
     //go back to Home with Active Filter On
     const activeButton = () => {
+        navigate("Home", "HomePage", null);
         fetchQuestions("Active");
     };
     //go back to Home with Unanswered Filter on
