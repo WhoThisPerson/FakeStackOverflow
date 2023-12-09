@@ -20,10 +20,8 @@ export default function HomePage({ navigate }) {
             //const end_index = index + 1;
             const response = await axios.get(`http://localhost:8000/api/questions?sortBy=${sortBy}`)
            
+            setVisible(response.data.slice(index * 5, (index + 1) * 5));
             setQuestions(response.data);
-
-            fetchVisibileQuestions();
-            console.log(visible_questions);
 
         } catch (error) {
             console.error("Failed to get Question data:", error);
@@ -31,24 +29,39 @@ export default function HomePage({ navigate }) {
     }
 
     //Retrieves which questions should be visible
-    const fetchVisibileQuestions = (() => {
+    const fetchVisibileQuestions = ( () => {
         let question_batch = [];
         //stop at 5 questions in the batch (index determines which 5)
         question_batch = questions.slice(index * 5, (index + 1) * 5)
 
         setVisible(question_batch);
+    })
 
-        //console.log(visible_questions);
-
-            // {questions.map((question) => (
-            //     <Question key={question._id} question={question} navigate={navigate} />
-            // ))}
+    //makes the prev/next buttons based on index 
+    const pageButtons = (() => {
+        console.log(index);
+        if (index === 0)
+        {
+            return <button className="newest" onClick={() => setIndex(index + 1)}>Next</button>
+        }
+        else 
+        {
+            return  <> <button className="newest" onClick={() => setIndex(index - 1)}>Prev</button> <button className="newest" onClick={() => setIndex(index + 1)}>Next</button></>
+                
+        }
     })
 
     //Default Newest filter
     useEffect(() => {
+        //to set index back to 0
+        setIndex(0);
         fetchQuestions("Newest");
     }, []);
+
+    //get the curent batch of questions whenever the index changes 
+    useEffect(() => {
+        fetchVisibileQuestions()
+    }, [index]);
 
     return (
         <>
@@ -64,6 +77,8 @@ export default function HomePage({ navigate }) {
              {visible_questions.map((question) => (
                  <Question key={question._id} question={question} navigate={navigate} />
              ))}
+
+            {pageButtons()}
         </>
     );
 }

@@ -56,7 +56,6 @@ app.get("/api/questions", async (req, res) => {
 
 
         const sortedQuestions = questions;
-        console.log(sortedQuestions);
 
         res.json(sortedQuestions);
     } catch (error) {
@@ -356,32 +355,39 @@ app.get("/api/users", async (req, res) => {
 })
 
 //Users Post Register Request
-// app.post("/api/users", async (req, res) => {
-//     try {
-//         const { username, email, password } = req.body;
-//         //Hash password
-//         const salt = await bcrypt.genSalt();
-//         const hashedPass = await bcrypt.hash(password, salt);
-//         //Create new user
-//         const user = new User({
-//             username: username,
-//             email: email,
-//             password: hashedPass,
-//             role: "User",
-//             questions_asked: [],
-//             answers_posted: [],
-//             tags_created: [],
-//             reputation: 0,
-//             date_created: new Date(),
-//         })
-//         //Save user
-//         await user.save();
-//         res.send(user);
+app.post("/api/users/", async (req, res) => {
+    try {
+        const { username, email, password } = req.body;
 
-//     } catch (error) {
-//         console.error("Failed to post user", error);
-//     }
-// })
+        //Verify that email does not already exist
+        const existingUser = await User.findOne({email});
+        console.log(existingUser);
+        if (existingUser) {
+            res.send("User exists");
+        } 
+        // Hash password
+        const salt = await bcrypt.genSalt();
+        const hashedPass = await bcrypt.hash(password, salt);
+        //Create new user
+        const user = new User({
+            username: username,
+            email: email,
+            password: hashedPass,
+            role: "User",
+            questions_asked: [],
+            answers_posted: [],
+            tags_created: [],
+            reputation: 0,
+            date_created: new Date(),
+        })
+        //Save user
+        await user.save();
+        res.send("User does not exist");
+
+    } catch (error) {
+        console.error("Failed to post user", error);
+    }
+})
 
 //User Login
 app.post("/api/users/login", async (req, res) => {
@@ -407,7 +413,7 @@ app.post("/api/users/login", async (req, res) => {
         console.log("Failed to Login");
     }
 })
-
+//User Get Login
 app.get("/api/users/login", async (req, res) => {
     try {
         const users = await User.find();
