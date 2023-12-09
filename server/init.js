@@ -77,7 +77,6 @@ function adminCreate(email, password) {
       questions_asked: [],
       answers_posted: [],
       tags_created: [],
-      comments_posted: [],
       reputation: 50,
       date_created: new Date(),
     };

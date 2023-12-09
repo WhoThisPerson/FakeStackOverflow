@@ -40,11 +40,6 @@ const usersSchema = new mongoose.Schema({
         ref: "Tag",
     }],
 
-    comments_posted : [{
-        type: mongoose.Schema.Types.ObjectId,
-        ref: "Comment",
-    }],
-
     reputation: {
         type: Number,
         default: 0,
