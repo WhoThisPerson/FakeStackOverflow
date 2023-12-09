@@ -35,7 +35,7 @@ export default function Header({navigate}) {
         }
 
         //go to home page with the searched inputs as parameters
-        navigate("SearchResults", {searched_tags, searched_words});
+        navigate("SearchResults", "HomePage" ,{searched_tags, searched_words});
     }
 
     return (

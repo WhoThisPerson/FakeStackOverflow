@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import axios from "axios";
 import { findLinks } from "../../util";
 
+//TODO: post question is not posting due to changes to database. Make sure to fix 
 export default function AskQuestionPage({ navigate }) {
     //state variables for all inputs to the question
     const [title, setTitle] = useState("");
@@ -103,7 +104,7 @@ export default function AskQuestionPage({ navigate }) {
 
             await axios.post("http://localhost:8000/api/questions", { param: question });
             
-            navigate("Home", null);
+            navigate("Home", "HomePage", null);
             
         } catch (error) {
             console.error("Error posting question", error);

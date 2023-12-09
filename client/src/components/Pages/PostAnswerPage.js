@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { findLinks } from "../../util";
 import axios from "axios";
 
+//TODO: post answer is not posting due to changes to database. Make sure to fix 
 export default function PostAnswerPage({navigate, parameters}) {
 
     //State variables for all inputs to the answer
@@ -89,7 +90,7 @@ export default function PostAnswerPage({navigate, parameters}) {
 
             console.log(newAnswer.data);
 
-            navigate("QuestionContentPage", { question });
+            navigate("QuestionContentPage", "HomePage", { question });
 
         } catch (error) {
             console.error("Failed to post Answer", error);
