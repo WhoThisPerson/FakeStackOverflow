@@ -39,10 +39,17 @@ export default function HomePage({ navigate }) {
 
     //makes the prev/next buttons based on index 
     const pageButtons = (() => {
-        console.log(index);
+        //check where index lies
+            //if index = 0, then remove prev button
+            //if index is on the last batch of questions avalible, remove next button
+            //if neither is true, give both prev / next buttons
         if (index === 0)
         {
             return <button className="newest" onClick={() => setIndex(index + 1)}>Next</button>
+        }
+        else if ((index + 1) * 5 > questions.length)
+        {
+            return <button className="newest" onClick={() => setIndex(index - 1)}>Prev</button>
         }
         else 
         {
