@@ -9,6 +9,14 @@ const app = express();
 const port = 8000;
 const url = "mongodb://127.0.0.1:27017/fake_so";
 
+const secretKey = process.argv[2];
+console.log(secretKey);
+//Check for input key
+if (secretKey == null) {
+    console.log("Enter a session key")
+    process.exit(0);
+}
+
 //get the models 
 const Question = require('./models/questions');
 const Answer = require('./models/answers');
@@ -21,6 +29,15 @@ const Comment = require('./models/comments');
 app.use(cors());
 app.use(express.json());
 app.use(cookieParser());
+app.use(session({
+    secret: secretKey,
+    resave: false,
+    rolling: true,
+    cookie: {
+        maxAge: 3600000,
+        secure: false,
+    },
+}));
 
 //Questions Get Request
 app.get("/api/questions", async (req, res) => {
@@ -531,8 +548,22 @@ app.post("/api/users/login", async (req, res) => {
         }
         //Check password matches stored password
         const response = await bcrypt.compare(password, user.password);
-        
+
         if (response) {
+            //Create user session
+            req.session.user = {
+                _id: user._id,
+                username: user.username,
+                email : user.email,
+                role: user.role,
+                questions_asked: user.questions_asked,
+                answers_posted: user.answers_posted,
+                tags_created: user.tags_created,
+                reputation: user.reputation,
+                date_created: user.date_created,
+            };
+            console.log(req.sessionID);
+
             console.log("Login Success");
         } else {
             console.log("Failed to Login");
