@@ -37,9 +37,13 @@ export default function HomePage({ navigate }) {
 
     //makes the prev/next buttons based on index 
     const pageButtons = (() => {
+        //if there are 5 or less questions, only one page is needed
+        if (questions.length <= 5)
+            return;
+
         //check where index lies
             //if index = 0, then remove prev button
-            //if index is on the last batch of questions avalible, remove next button
+            //if index is on the last batch of questions avalible, next button needs to go back to index 0
             //if neither is true, give both prev / next buttons
         if (index === 0)
         {
@@ -47,11 +51,17 @@ export default function HomePage({ navigate }) {
         }
         else if ((index + 1) * 5 > questions.length)
         {
-            return <button className="newest" onClick={() => setIndex(index - 1)}>Prev</button>
+            return  <> 
+            <button className="newest" onClick={() => setIndex(index - 1)}>Prev</button> 
+            <button className="newest" onClick={() => setIndex(0)}>Next</button>
+            </>
         }
         else 
         {
-            return  <> <button className="newest" onClick={() => setIndex(index - 1)}>Prev</button> <button className="newest" onClick={() => setIndex(index + 1)}>Next</button></>
+            return  <> 
+            <button className="newest" onClick={() => setIndex(index - 1)}>Prev</button> 
+            <button className="newest" onClick={() => setIndex(index + 1)}>Next</button>
+            </>
                 
         }
     })

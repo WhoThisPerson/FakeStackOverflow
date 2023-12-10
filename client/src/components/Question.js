@@ -2,9 +2,9 @@ import { formatDate } from "../util";
 import axios from "axios";
 
 export default function Question({question, navigate}) {
-
+    //info for the question
     const {_id, title, summary, text, tags, comments, answers, asked_by, ask_date_time, views, upvotes, downvotes } = question;
-    
+
     //User wants to check question content
     const openQuestionContent = () => {
 
@@ -17,7 +17,7 @@ export default function Question({question, navigate}) {
     const updateViewCount = async () => {
         try {
             const response = await axios.put(`http://localhost:8000/api/questions/${_id}`);
-            console.log(response.data);
+            //console.log(response.data);
         } catch (error) {
             console.error("Failed to update view count", error);
         }

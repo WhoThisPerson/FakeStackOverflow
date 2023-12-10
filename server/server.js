@@ -118,7 +118,6 @@ app.get("/api/tag_results", async (req, res) => {
 //Search Results Get Request 
 app.get("/api/search", async (req, res) => {
     try {
-
         const searched_tags = req.query["searched_tags"];
         const searched_words = req.query["searched_words"];
 
