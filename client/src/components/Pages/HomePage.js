@@ -3,8 +3,6 @@ import ButtonsContainer from "../ButtonsContainer";
 import Question from "../Question";
 import axios from "axios";
 
-//TODO: 
-//Ask why questions and visibile_questions keep changing 
 export default function HomePage({ navigate }) {
 
     //collection of all questions in the database
