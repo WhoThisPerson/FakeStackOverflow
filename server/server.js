@@ -24,6 +24,7 @@ const Tag = require('./models/tags');
 const User = require('./models/users');
 const { manageSearchedQuestions } = require('./utility');
 const Comment = require('./models/comments');
+const answers = require('./models/answers');
 
 //Middleware
 app.use(cors());
@@ -592,6 +593,22 @@ app.get("/api/users/login", async (req, res) => {
     } catch (error) {
         console.error("Failed to fetch questions", error);
     };
+})
+
+////DELETE Requests //////////////////////////////////////
+app.delete("/api/answers", async (req, res) => {
+    try{
+        const {ans_id} = req.body;
+
+        //delete any comments attached to the answer
+        
+
+        //delete the answer from the collection
+        await answers.deleteOne({_id : ans_id});
+
+    }catch(error) {
+        console.error("Failed to delete answer", error);
+    }
 })
 
 
