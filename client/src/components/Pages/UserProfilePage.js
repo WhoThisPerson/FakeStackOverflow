@@ -5,13 +5,13 @@ import axios from "axios";
 export default function UserProfilePage({navigate}) {
 
     //Retrieve data from local storage
-    const [userInfo, setUserInfo] = useState(JSON.parse(localStorage.getItem("userInfo")));
+    const [userInfo, setUserInfo] = useState(null);
     //Will contain list of all Users for Admins
     const [userList, setUserList] = useState([]);
 
 
     useEffect(() => {
-        setUserInfo(JSON.parse(localStorage.getItem("userInfo")));
+        
     })
 
     console.log(userInfo);
@@ -26,7 +26,6 @@ export default function UserProfilePage({navigate}) {
         //Delete Session locally?
         //Make request to remove user session from server
         localStorage.removeItem("sessionId");
-        localStorage.removeItem("userInfo");
         //Go Back to WelcomePage
         navigate("", "WelcomePage", null);
     }
@@ -36,10 +35,10 @@ export default function UserProfilePage({navigate}) {
                 //Registered User or Admin
                 <>
                     <div className="user-profile-header"> 
-                        <h1>Username: {userInfo.username}</h1>
+                        {/* <h1>Username: {userInfo.username}</h1>
                         <h2>Role: {userInfo.role}</h2>
                         <h3>Reputation: {userInfo.reputation}</h3>
-                        <h3>Member since: {formatMemberDate(date)}</h3>
+                        <h3>Member since: {formatMemberDate(date)}</h3> */}
 
                         <div className="user-profile-log-out-container">
                             <button className="user-profile-log-out" onClick={logOut}>Log Out</button>

@@ -13,6 +13,11 @@ const answersSchema = new mongoose.Schema({
         required: true,
     },
 
+    comments: [{
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "Comment",
+    }],
+
     ans_date_time: {
         type: Date, 
         default: Date.now

@@ -43,10 +43,9 @@ export default function LoginUserPage({navigate}) {
   
             if (response.data.success) {
                 //Store data retrieved from response
-                const { sessionID, user } = response.data;
-                //Store sessionId and userInfo locally
+                const { sessionID } = response.data;
+                //Store sessionId locally
                 localStorage.setItem("sessionId", sessionID);
-                localStorage.setItem("userInfo", JSON.stringify(user));
                 //Go to HomePage
                 navigate("Home", "HomePage", null);
             } else {
