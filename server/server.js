@@ -38,7 +38,7 @@ app.use(session({
     rolling: true,
     cookie: {
         maxAge: 3600000,
-        secure: true,
+        secure: false,
         httpOnly: true,
     },
 }));
@@ -565,7 +565,7 @@ app.post("/api/users/login", async (req, res) => {
                 reputation: user.reputation,
                 date_created: user.date_created,
             };
-
+            console.log(req.sessionID);
             res.json({
                 success: true,
                 message: "Login Success",
@@ -584,6 +584,28 @@ app.post("/api/users/login", async (req, res) => {
 })
 //User Get Login
 app.get("/api/users/login", async (req, res) => {
+    try {
+        const users = await User.find();
+        res.json(users);
+
+    } catch (error) {
+        console.error("Failed to fetch questions", error);
+    };
+})
+
+app.post("/api/users/logout", async (req, res) => {
+    //Clear session on server
+    req.session.destroy();
+    //Remove cookie from client
+    res.clearCookie("sessionID");
+
+    res.json({
+        success: true,
+        message: "Successfully Logged Out",
+    });
+})
+
+app.get("/api/users/logout", async (req, res) => {
     try {
         const users = await User.find();
         res.json(users);

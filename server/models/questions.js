@@ -40,7 +40,7 @@ const questionSchema = new mongoose.Schema({
     asked_by: {
         type: mongoose.Schema.Types.ObjectId,
         ref: "User",
-        default: "Anonymous",
+        required: true,
     },
 
     ask_date_time: {
