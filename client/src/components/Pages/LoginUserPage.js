@@ -41,7 +41,12 @@ export default function LoginUserPage({navigate}) {
 
             const response = await axios.post("http://localhost:8000/api/users/login", {email: email, password: password});
   
-            if (response.data == true) {
+            if (response.data.success) {
+                //Store data retrieved from response
+                const { sessionID, user } = response.data;
+                //Store sessionId and userInfo locally
+                localStorage.setItem("sessionId", sessionID);
+                localStorage.setItem("userInfo", JSON.stringify(user));
                 //Go to HomePage
                 navigate("Home", "HomePage", null);
             } else {

@@ -14,7 +14,7 @@ import TagsResults from "./components/Pages/TagResults";
 import SearchResultsPage from "./components/Pages/SearchResultsPage";
 import QuestionContentPage from "./components/Pages/QuestionContentPage";
 import PostAnswerPage from "./components/Pages/PostAnswerPage";
-import UserProfile from './components/Pages/UserProfile';
+import UserProfilePage from './components/Pages/UserProfilePage';
 
 export default class App extends React.Component {
       
@@ -60,7 +60,7 @@ export default class App extends React.Component {
       case "PostAnswerPage":
         return <PostAnswerPage navigate={this.navigate} parameters={parameters} />;
       case "UserProfile":
-        return <UserProfile navigate={this.navigate} parameters={parameters} />
+        return <UserProfilePage navigate={this.navigate} parameters={parameters} />
       case "":
         return;
       default:
