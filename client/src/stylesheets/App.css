@@ -245,7 +245,7 @@
 .post-answer-button-container {
     margin-top: 3%;
 }
-.post-answer-button {
+.post-answer-button, .user-profile-log-out {
     color: white;
     background-color: #0096ff;
     padding: 15px;
@@ -269,3 +269,25 @@
     box-sizing: border-box;
     text-align: center;
 }
+/* User Profile Page*/
+.user-profile-header {
+    border-bottom: 2px dashed gray;
+    padding: 2%;
+}
+.user-profile-log-out-container {
+    text-align: right;
+    margin-right: 5%;
+    margin-top: -12%;
+    padding: 2%;
+}
+
+.user-profile-page-guest {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-weight: bold;
+    font-size: xx-large;
+    margin: 0;
+    height: 85vh;
+}
+

@@ -135,7 +135,6 @@ app.get("/api/tag_results", async (req, res) => {
 //Search Results Get Request 
 app.get("/api/search", async (req, res) => {
     try {
-
         const searched_tags = req.query["searched_tags"];
         const searched_words = req.query["searched_words"];
 
@@ -565,11 +564,21 @@ app.post("/api/users/login", async (req, res) => {
             console.log(req.sessionID);
 
             console.log("Login Success");
+            res.json({
+                success: true,
+                message: "Login Success",
+                sessionID: req.sessionID,
+                user: req.session.user,
+            });
+
         } else {
             console.log("Failed to Login");
+            res.json({
+                success: false,
+                message: "Failed to Login",
+            });
         }
-        res.send(response);
-
+        
     } catch (error) {
         console.log("Failed to Login");
     }

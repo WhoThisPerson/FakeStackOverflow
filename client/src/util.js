@@ -34,3 +34,30 @@ const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 export function validEmail(email) {
     return (email.match(emailRegex) !== null);
 }
+
+export function formatMemberDate(date) {
+    const currentDate = new Date();
+    const difference = currentDate - date;
+    //Determine corresponding time values
+    const seconds = Math.floor(difference / 1000);
+    const minutes = Math.floor(difference / (1000 * 60));
+    const hours = Math.floor(difference / (1000 * 60 * 60));
+    const days = Math.floor(difference / (1000 * 60 * 60 * 24));
+
+    if (seconds < 60) {
+        return seconds + " seconds";
+    } else if (minutes < 60) {
+        return minutes + " minutes ";
+    } else if (hours < 24) {
+        return hours + " hours ago";
+    } else if (days < 365) {
+        return days + " days ago";
+    } else {
+        const time = {
+            year: "numeric",
+            month: "short",
+            day: "numeric",
+        };
+        return date.toLocaleDateString(undefined, time);
+    }
+}
