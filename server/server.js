@@ -24,6 +24,8 @@ const Tag = require('./models/tags');
 const User = require('./models/users');
 const { manageSearchedQuestions } = require('./utility');
 const Comment = require('./models/comments');
+const answers = require('./models/answers');
+const comments = require('./models/comments');
 
 //Middleware
 app.use(cors({
@@ -46,14 +48,14 @@ app.use(session({
 //Questions Get Request
 app.get("/api/questions", async (req, res) => {
     try {
-        let questions = await Question.find()
+        let questions = Question.find()
             .populate("tags")
             .populate("answers");
         //Default sorting to Newest
         const sortBy = req.query.sortBy || "Newest";
         //New Posted Questions at Top
         if (sortBy === "Newest") {
-            
+
             questions = questions.sort((a, b) => {
                 return (b.ask_date_time - a.ask_date_time);
             });
@@ -69,7 +71,7 @@ app.get("/api/questions", async (req, res) => {
                     return 1;
                 } else if (mostRecentAAnswer) {
                     return -1;
-                } 
+                }
             })
 
         } else if (sortBy === "Unanswered") {
@@ -87,7 +89,7 @@ app.get("/api/questions", async (req, res) => {
 //Answers Get Request
 app.get("/api/answers", async (req, res) => {
     try {
-        const answers = await Answer.find();
+        const answers = await Answer.find().populate("comments");
         res.json(answers);
     } catch (error) {
         console.error("Failed to fetch answers", error);
@@ -322,7 +324,7 @@ app.get("/api/searchbutton", async (req, res) => {
         const sortBy = req.query.sortBy || "Newest";
         //New Posted Questions at Top
         if (sortBy === "Newest") {
-            
+
             result = result.sort((a, b) => {
                 return (b.ask_date_time - a.ask_date_time);
             });
@@ -338,7 +340,7 @@ app.get("/api/searchbutton", async (req, res) => {
                     return 1;
                 } else if (mostRecentAAnswer) {
                     return -1;
-                } 
+                }
             })
 
         } else if (sortBy === "Unanswered") {
@@ -381,7 +383,7 @@ app.post("/api/questions", async (req, res) => {
                 //store the id of the new tag
                 tagIDs.push(tag._id);
             }
-            else 
+            else
                 tagIDs.push(existingTag[0]._id);
         }
         //Create new Question
@@ -479,8 +481,8 @@ app.get("/api/questions/:id", async (req, res) => {
 
     try {
         const question = await Question.findById(questionID)
-        .populate("tags")
-        .populate("answers");
+            .populate("tags")
+            .populate("answers");
         //Sort by Newest
         const sortedAnswers = question.answers.sort((a, b) => {
             return (b.ans_date_time - a.ans_date_time);
@@ -510,11 +512,11 @@ app.post("/api/users/", async (req, res) => {
         const { username, email, password } = req.body;
 
         //Verify that email does not already exist
-        const existingUser = await User.findOne({email});
+        const existingUser = await User.findOne({ email });
         console.log(existingUser);
         if (existingUser) {
             res.send("User exists");
-        } 
+        }
         // Hash password
         const salt = await bcrypt.genSalt();
         const hashedPass = await bcrypt.hash(password, salt);
@@ -557,7 +559,7 @@ app.post("/api/users/login", async (req, res) => {
             req.session.user = {
                 _id: user._id,
                 username: user.username,
-                email : user.email,
+                email: user.email,
                 role: user.role,
                 questions_asked: user.questions_asked,
                 answers_posted: user.answers_posted,
@@ -577,7 +579,7 @@ app.post("/api/users/login", async (req, res) => {
                 message: "Failed to Login",
             });
         }
-        
+
     } catch (error) {
         console.log("Failed to Login");
     }
@@ -591,6 +593,111 @@ app.get("/api/users/login", async (req, res) => {
     } catch (error) {
         console.error("Failed to fetch questions", error);
     };
+})
+
+////DELETE Requests //////////////////////////////////////
+app.delete("/api/user", async (req, res) => {
+    const { user_id } = req.body;
+    try {
+        const user_obj = await User.findById(user_id)
+            .populate("questions")
+            .populate("answers");
+
+        //go thru every question that the user wrote
+        for (let question of user_obj.questions_asked) {
+            //go thru every answer in the question
+            for (const answer of question.answers) {
+
+                //go thru every comment in the current answer
+                for (const comment of answer.comments) {
+                    //delete the comment 
+                    await Comment.deleteOne({ _id: comment._id });
+                }
+
+                //delete the answer
+                await Answer.deleteOne({ _id: answer._id });
+            }
+
+            //go thru every comment in question and delete it
+            for (const comment of question_obj.comments) {
+                await Comment.deleteOne({ _id: comment._id });
+            }
+
+            //delete the question
+            await Question.deleteOne({ _id: question._id });
+        }
+
+        await User.deleteOne({_id : user_id});
+        
+        //send response back that everything went well
+        res.sendStatus(200);
+    } catch (error) {
+        console.error("User can not be deleted.");
+    }
+})
+
+app.delete("/api/question", async (req, res) => {
+    const { question_id } = req.body;
+
+    try {
+        let question_obj = await Question.findById(question_id)
+            .populate("tags")
+            .populate("answers")
+            .populate("comments");
+
+        //go thru every answer in the question
+        for (const answer of question_obj.answers) {
+            //go thru every comment in the current answer
+            for (const comment of answer.comments) {
+                //delete the comment 
+                await Comment.deleteOne({ _id: comment._id });
+            }
+
+            //delete the answer
+            await Answer.deleteOne({ _id: answer._id });
+        }
+
+        //go thru every comment in question and delete it
+        for (const comment of question_obj.comments) {
+            await Comment.deleteOne({ _id: comment._id });
+        }
+
+        //delete the user
+        await Question.deleteOne({ _id: question_id });
+
+        //send response back that everything went well
+        res.sendStatus(200);
+    } catch (error) {
+        console.error("Failed to delete question", error);
+    }
+
+})
+
+app.delete("/api/answers", async (req, res) => {
+    const { ans_id } = req.body;
+
+    try {
+        const answer_obj = await Answer.findById(ans_id).populate("comments");
+
+        //check if the answer exists
+        if (answer_obj.length == 0) {
+            throw new Exception("Can't find answer.");
+        }
+
+        //go thru each comment and delete it
+        for (let comment of answer_obj.comments) {
+            await Comment.deleteOne({ _id: comment._id });
+        }
+
+        //delete the answer from the collection
+        await Answer.deleteOne({ _id: ans_id });
+
+        //send response back that everything went well
+        res.sendStatus(200);
+
+    } catch (error) {
+        console.error("Failed to delete answer", error);
+    }
 })
 
 
