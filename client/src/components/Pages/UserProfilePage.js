@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { formatMemberDate } from "../../util";
 import axios from "axios";
 
-export default function UserProfile({navigate}) {
+export default function UserProfilePage({navigate}) {
 
     //Retrieve data from local storage
     const [userInfo, setUserInfo] = useState(JSON.parse(localStorage.getItem("userInfo")));
@@ -20,7 +20,7 @@ export default function UserProfile({navigate}) {
     if (userInfo != null) {
          date = new Date(userInfo.date_created);
     }
-    
+
     //Handle Log out
     const logOut = () => {
         //Delete Session locally?
