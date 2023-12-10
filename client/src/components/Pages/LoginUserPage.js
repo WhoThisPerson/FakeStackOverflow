@@ -30,13 +30,27 @@ export default function LoginUserPage({navigate}) {
     //Exceptions:
     // Unregistered Email
     // Incorrect Password
-    const finishLoggingIn = (event) => {
+    const finishLoggingIn = async (event) => {
         event.preventDefault();
         event.stopPropagation();
+        //Field validation
+        if (!validInput()) return;
 
+        //Make request to log in
+        try {
 
-        //Go to HomePage
-        navigate("Home", "HomePage", null);
+            const response = await axios.post("http://localhost:8000/api/users/login", {email: email, password: password});
+  
+            if (response.data == true) {
+                //Go to HomePage
+                navigate("Home", "HomePage", null);
+            } else {
+                alert("Failed to Login");
+                return;
+            }
+        } catch (error) {
+            console.log("Failed to retrieve login info", error);
+        }
     }
 
     return (

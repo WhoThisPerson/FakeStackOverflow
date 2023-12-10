@@ -15,6 +15,7 @@ const Answer = require('./models/answers');
 const Tag = require('./models/tags');
 const User = require('./models/users');
 const { manageSearchedQuestions } = require('./utility');
+const Comment = require('./models/comments');
 
 //Middleware
 app.use(cors());
@@ -473,7 +474,7 @@ app.get("/api/questions/:id", async (req, res) => {
     }
 });
 
-//Users Get Request
+//Users Get All Request
 app.get("/api/users", async (req, res) => {
     try {
         const users = await User.find();
@@ -483,11 +484,18 @@ app.get("/api/users", async (req, res) => {
     }
 })
 
-//Users Post Request
-app.post("/api/users/register", async (req, res) => {
+//Users Post Register Request
+app.post("/api/users/", async (req, res) => {
     try {
         const { username, email, password } = req.body;
-        //Hash password
+
+        //Verify that email does not already exist
+        const existingUser = await User.findOne({email});
+        console.log(existingUser);
+        if (existingUser) {
+            res.send("User exists");
+        } 
+        // Hash password
         const salt = await bcrypt.genSalt();
         const hashedPass = await bcrypt.hash(password, salt);
         //Create new user
@@ -504,14 +512,47 @@ app.post("/api/users/register", async (req, res) => {
         })
         //Save user
         await user.save();
-        res.send(user);
+        res.send("User does not exist");
 
     } catch (error) {
         console.error("Failed to post user", error);
     }
 })
 
+//User Login
+app.post("/api/users/login", async (req, res) => {
+    try {
+        const { email, password } = req.body;
+        //Find User by Email
+        const user = await User.findOne({ email });
+        //Check if they exist
+        if (!user) {
+            res.send("User does not exist");
+        }
+        //Check password matches stored password
+        const response = await bcrypt.compare(password, user.password);
+        
+        if (response) {
+            console.log("Login Success");
+        } else {
+            console.log("Failed to Login");
+        }
+        res.send(response);
 
+    } catch (error) {
+        console.log("Failed to Login");
+    }
+})
+//User Get Login
+app.get("/api/users/login", async (req, res) => {
+    try {
+        const users = await User.find();
+        res.json(users);
+
+    } catch (error) {
+        console.error("Failed to fetch questions", error);
+    };
+})
 
 
 //Start Server
