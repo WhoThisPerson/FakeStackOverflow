@@ -27,7 +27,10 @@ const Comment = require('./models/comments');
 const answers = require('./models/answers');
 
 //Middleware
-app.use(cors());
+app.use(cors({
+    credentials: true,
+    origin: "http://localhost:3000",
+}));
 app.use(express.json());
 app.use(cookieParser());
 app.use(session({
@@ -36,7 +39,8 @@ app.use(session({
     rolling: true,
     cookie: {
         maxAge: 3600000,
-        secure: false,
+        secure: true,
+        httpOnly: true,
     },
 }));
 
@@ -562,18 +566,13 @@ app.post("/api/users/login", async (req, res) => {
                 reputation: user.reputation,
                 date_created: user.date_created,
             };
-            console.log(req.sessionID);
 
-            console.log("Login Success");
             res.json({
                 success: true,
                 message: "Login Success",
                 sessionID: req.sessionID,
-                user: req.session.user,
             });
-
         } else {
-            console.log("Failed to Login");
             res.json({
                 success: false,
                 message: "Failed to Login",
