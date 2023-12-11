@@ -301,7 +301,15 @@
 #username {
     text-decoration: none;
     font-size: x-large;
+    color: black;
 }
 .user-delete-container {
-    text-align: right;
+    margin-top: 1%;
+    margin-left: auto;
+}
+.user-delete-button {
+    font-size: large;
+    color: white;
+    background-color: red;
+    border-radius: 5px;
 }
