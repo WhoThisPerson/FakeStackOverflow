@@ -57,8 +57,6 @@ export default function Answer({ id, text, ans_by, ans_date_time }) {
     useEffect(() => {
         const getComments = async () => {
             try {
-                setCommentIndex(0);
-
                 const response = await axios.get(`http://localhost:8000/api/answers/${id}`);
 
                 setVisibleComments(response.data.comments.slice(comment_index * 3, (comment_index + 1) * 3));
@@ -94,7 +92,7 @@ export default function Answer({ id, text, ans_by, ans_date_time }) {
         if (comment_index === 0) {
             return <button className="newest" onClick={() => setCommentIndex(comment_index + 1)}>Next</button>
         }
-        else if ((comment_index + 1) * 3 > comments.length) {
+        else if ((comment_index + 1) * 3 >= comments.length) {
             return <>
                 <button className="newest" onClick={() => setCommentIndex(comment_index - 1)}>Prev</button>
                 <button className="newest" onClick={() => setCommentIndex(0)}>Next</button>
@@ -122,15 +120,19 @@ export default function Answer({ id, text, ans_by, ans_date_time }) {
         }
 
         try {
-
+            event.preventDefault();
+            //post the new comment and get the data for it
             const newComment = axios.post("http://localhost:8000/api/answer_comments", { user: userInfo, aid: id, text: commentText });
-            console.log(newComment);
+            //add it to the comments state
             const new_arr = [...comments];
             new_arr.unshift(newComment);
 
-            console.log(new_arr);
+            //reset index to 0
             setCommentIndex(0);
             setComments(new_arr);
+
+
+            setCommentText("");
             
 
         } catch (error) {
@@ -159,11 +161,12 @@ export default function Answer({ id, text, ans_by, ans_date_time }) {
                     {commentPageButtons()}
                 </div>
 
-                <textarea
+                <input type = "text"
+                value = {commentText}
                     rows={4} cols={5} id="post-answer-page-text-input"
                     onKeyDown={onEnterKey}
                     onChange={onInputChange}
-                ></textarea>
+                ></input>
 
             </div>
 
