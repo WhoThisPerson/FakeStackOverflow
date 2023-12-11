@@ -137,7 +137,7 @@
 .ask-question-page {
     padding: 2%;
 }
-#title-input {
+#title-input, #summary-input {
     width: 300px;
     height: 50px;
     font-size: large;
@@ -146,7 +146,7 @@
     width: 300px;
     height: 200px;
 }
-#tags-input, #username-input {
+#tags-input {
     font-style: italic;
     width: 300px;
     height: 25px;
@@ -228,12 +228,6 @@
 /*Post Answer Page*/
 .post-answer-page {
     padding: 5%;
-}
-
-#post-answer-page-username-input {
-    height: 45px;
-    width: 500px;
-    font-size: large;
 }
 
 #post-answer-page-text-input {

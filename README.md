@@ -7,8 +7,8 @@ Add design docs in *images/*
 - Server: npm install mongoose express express-session cookie-parser cors bcrpyt nodemon
 
 - 1. Start DB
-- 2. Run "node init.js <adminEmail> <adminPass>" in server directory
-- 3. Run "nodemon server.js <secretKey>" in server directory
+- 2. Run "node init.js admin@email.com adminPass" in server directory
+- 3. Run "nodemon server.js SuperSecretKey" in server directory
 - 4. Run "npm start" in client directory to begin application
 
 ## Team Member 1 Contribution (B1 Qirong Wu)

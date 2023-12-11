@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { findLinks } from "../../util";
 import axios from "axios";
 
@@ -6,15 +6,11 @@ import axios from "axios";
 export default function PostAnswerPage({navigate, parameters}) {
 
     //State variables for all inputs to the answer
-    const [username, setUsername] = useState("");
+    const [username, setUsername] = useState();
     const [text, setText] = useState("");
     const {question} = parameters;
 
     //storing input in the respective state variables
-    const makingUsername = (event) => {
-        setUsername(event.target.value);
-    }
-
     const makingText = (event) => {
         event.preventDefault();
         const text = event.target.value;
@@ -40,13 +36,26 @@ export default function PostAnswerPage({navigate, parameters}) {
         setText(newText.join(" "));
     }
 
+    useEffect(() => {
+        const retrieveUserInfo = async () => {
+            try {
+                const response = await axios.get("http://localhost:8000/api/users/profile", {withCredentials: true});
+    
+                    if (response.data) {
+                        setUsername(response.data._id);
+                    } 
+    
+            } catch (error) {
+                console.log("Failed to retrieve user Info");
+            }
+        }
+
+        retrieveUserInfo();
+    }, []);
+
     //Check for valid input
     const validInput = (() => {
         //Initially checking that parameters are not empty
-        if (username.trim() === 0) {
-            alert("Username cannot be empty");
-            return false;
-        }
         if (text.trim() === 0) {
             alert("Text cannot be empty");
             return false;
@@ -88,7 +97,7 @@ export default function PostAnswerPage({navigate, parameters}) {
             const newAnswer = await axios.post("http://localhost:8000/api/answers", 
             { text: text, ans_by: username, ans_date_time: new Date(), questionID : question._id});
 
-            console.log(newAnswer.data);
+            
 
             navigate("QuestionContentPage", "HomePage", { question });
 
@@ -100,10 +109,6 @@ export default function PostAnswerPage({navigate, parameters}) {
     return (
         <div className="post-answer-page">
             <>
-                <h2>Username*</h2>
-                <div className="post-answer-page-username-box">
-                    <input type="text" id="post-answer-page-username-input" onChange={makingUsername}></input>
-                </div>
                 <h2>Answer Text*</h2>
                 <div className="post-answer-text-box">
                     <textarea rows={4} cols={10} id="post-answer-page-text-input" onChange={makingText}></textarea>
