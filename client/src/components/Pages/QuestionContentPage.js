@@ -71,7 +71,6 @@ export default function QuestionContentPage({ navigate, parameters }) {
         }
 
         getQuestion();
-
     }, [question._id]);
 
     //get the curent batch of answer whenever the index changes 
@@ -99,7 +98,7 @@ export default function QuestionContentPage({ navigate, parameters }) {
         try {
 
             const newComment = axios.post("http://localhost:8000/api/question_comments", { user: userInfo, qid: question._id, text: commentText });
-            setCommentIndex(0);
+            //TODO: ask TA how to refresh this automatically
         } catch (error) {
             console.error("Failed to post comment:", error);
         }
@@ -149,6 +148,7 @@ export default function QuestionContentPage({ navigate, parameters }) {
         ans_batch = answers.slice(ans_index * 5, (ans_index + 1) * 5)
 
         setVisibleAns(ans_batch);
+        console.log(answers);
     })
 
     //makes the prev/next buttons based on index 
@@ -244,6 +244,8 @@ export default function QuestionContentPage({ navigate, parameters }) {
             <div className="answer-question-button-container">
                 <button onClick={postAnswer} className="answer-question-button">Answer Question</button>
             </div>
+
+            
         </>
     );
 }
