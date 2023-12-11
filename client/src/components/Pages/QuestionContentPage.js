@@ -8,6 +8,8 @@ import axios from "axios";
 export default function QuestionContentPage({ navigate, parameters }) {
 
     const { question } = parameters;
+    //Retrieve data from local storage
+    const [userInfo, setUserInfo] = useState(null);
     //Create Date object to format
     const askDate = new Date(question.ask_date_time);
 
@@ -26,6 +28,26 @@ export default function QuestionContentPage({ navigate, parameters }) {
     const [visible_ans, setVisibleAns] = useState([]);
     //current "index" for the answers (aka which group of 5 answers are in visible at the moment)
     const [ans_index, setAnsIndex] = useState(0);
+
+    //Retrieve userInfo
+    useEffect(() => {
+        const retrieveUserInfo = async () => {
+            try {
+                const response = await axios.get("http://localhost:8000/api/users/profile", {withCredentials: true});
+
+                if (response.data) {
+                    setUserInfo(response.data);
+                } else {
+                    setUserInfo(null);
+                }
+
+            } catch (error) {
+                console.log("Failed to retrieve user info");
+            }
+        };
+
+        retrieveUserInfo();
+    }, []);
 
     //Update answers
     useEffect(() => {
@@ -59,7 +81,23 @@ export default function QuestionContentPage({ navigate, parameters }) {
 
     //get the current batch of comments whenever the comment index changes
     useEffect(() => {
-        fetchVisibileComments()
+        console.log("here");
+        const getQuestion = async () => {
+            try {
+                const response = await axios.get(`http://localhost:8000/api/questions/${question._id}`);
+
+                setVisibleComments(response.data.comments.slice(ans_index * 3, (ans_index + 1) * 3));
+                setComments(response.data.comments);
+
+                setVisibleAns(response.data.answers.slice(ans_index * 5, (ans_index + 1) * 5));
+                setAnswers(response.data.answers);
+
+            } catch (error) {
+                console.error("Failed to find question", error);
+            }
+        }
+
+        getQuestion();
     }, [comment_index]);
 
     //to add the text to the state variable
@@ -76,9 +114,8 @@ export default function QuestionContentPage({ navigate, parameters }) {
 
         try {
 
-            const newComment = axios.post("http://localhost:8000/api/comments", { /*user: userInfo*/ qid: question._id, text: commentText });
-            console.log(newComment.data);
-            navigate("QuestionContentPage", "HomePage", { question });
+            const newComment = axios.post("http://localhost:8000/api/comments", { user: userInfo, qid: question._id, text: commentText });
+            setCommentIndex(0);
         } catch (error) {
             console.error("Failed to post comment:", error);
         }
@@ -88,7 +125,7 @@ export default function QuestionContentPage({ navigate, parameters }) {
     const fetchVisibileComments = (() => {
         let comment_batch = [];
         //stop at 5 answers in the batch (index determines which 5)
-        comment_batch = comments.slice(comment_index * 5, (comment_index + 1) * 5)
+        comment_batch = comments.slice(comment_index * 3, (comment_index + 1) * 3)
 
         setVisibleComments(comment_batch);
     })
@@ -104,18 +141,18 @@ export default function QuestionContentPage({ navigate, parameters }) {
         //if index is on the last batch of comments avalible, next button needs to go back to index 0
         //if neither is true, give both prev / next buttons
         if (comment_index === 0) {
-            return <button className="newest" onClick={() => setAnsIndex(comment_index + 1)}>Next</button>
+            return <button className="newest" onClick={() => setCommentIndex(comment_index + 1)}>Next</button>
         }
         else if ((comment_index + 1) * 3 > comments.length) {
             return <>
-                <button className="newest" onClick={() => setAnsIndex(comment_index - 1)}>Prev</button>
-                <button className="newest" onClick={() => setAnsIndex(0)}>Next</button>
+                <button className="newest" onClick={() => setCommentIndex(comment_index - 1)}>Prev</button>
+                <button className="newest" onClick={() => setCommentIndex(0)}>Next</button>
             </>
         }
         else {
             return <>
-                <button className="newest" onClick={() => setAnsIndex(comment_index - 1)}>Prev</button>
-                <button className="newest" onClick={() => setAnsIndex(comment_index + 1)}>Next</button>
+                <button className="newest" onClick={() => setCommentIndex(comment_index - 1)}>Prev</button>
+                <button className="newest" onClick={() => setCommentIndex(comment_index + 1)}>Next</button>
             </>
 
         }

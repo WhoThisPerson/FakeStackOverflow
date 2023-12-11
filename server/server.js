@@ -444,11 +444,11 @@ app.post("/api/answers", async (req, res) => {
 //Comment Post Request
 app.post("/api/comments", async (req, res) => {
     try{
-        const {qid , text} = req.body;
+        const {user, qid , text} = req.body;
 
         //create new comment 
         const comment = new Comment({
-            //commenter: user,
+            commenter: user,
             text: text,
         });
 
@@ -460,20 +460,11 @@ app.post("/api/comments", async (req, res) => {
 
         //Push commentID to corresponding question comments array
         const question = await Question.findById(qid)
-        question.comments.push(commentID);
+        question.comments.unshift(commentID);
         //Update question
         await question.save();
 
-        const updatedQuestion = await Question.findById(qid).populate("answers").populate("comments");
-        //Sort by Newest
-        const sortedComments = updatedQuestion.comments.sort((a, b) => {
-            return (b.ans_date_time - a.ans_date_time);
-        })
-
-        updatedQuestion.comments = sortedComments;
-
-        res.json(updatedQuestion);
-
+        res.sendStatus(200);
 
     }catch(error)
     {
