@@ -1,6 +1,7 @@
 import React, {useState} from 'react';
 
-export default function Header({navigate}) {
+export default function Header({currentPage, navigate}) {
+
     //to store input text in the search bar
     const [inputText, setInputText] = useState("");
 
@@ -42,6 +43,7 @@ export default function Header({navigate}) {
         <div className='header'>
             <h1 className='title'>Fake Stack Overflow</h1>
 
+            
             <div id='search-box'>
                 <input id='search-input'
                     type='text'

@@ -48,7 +48,7 @@ app.use(session({
 //Questions Get Request
 app.get("/api/questions", async (req, res) => {
     try {
-        let questions = Question.find()
+        let questions = await Question.find()
             .populate("tags")
             .populate("answers");
         //Default sorting to Newest
