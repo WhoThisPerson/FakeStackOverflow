@@ -79,8 +79,8 @@ app.get("/api/questions", async (req, res) => {
 
 
         const sortedQuestions = questions;
-        console.log(sortedQuestions);
-        console.log("---------------");
+        // console.log(sortedQuestions);
+        // console.log("---------------");
         res.json(sortedQuestions);
     } catch (error) {
         console.error("Failed to fetch questions", error);
@@ -367,13 +367,18 @@ app.post("/api/questions", async (req, res) => {
         const { param } = req.body;
         //stores the IDS of tags for the posted question
         const tagIDs = [];
-
+        console.log(param.reputation);
         for (const tagName of param.tags) {
-            //Determine if tagName exists (remeber that find returns an array)
+            //Determine if tagName exists (remember that find returns an array)
             const existingTag = await Tag.find({ name: tagName });
 
             //if the tag doesn't exist
             if (existingTag.length == 0) {
+                //Check if User has enough reputation to add new tag
+                if (param.reputation < 50) {
+                    res.send("Not enough reputation");
+                    return;
+                }
                 //Create new tag
                 const tag = new Tag({
                     name: tagName
@@ -382,23 +387,27 @@ app.post("/api/questions", async (req, res) => {
                 await tag.save();
                 //store the id of the new tag
                 tagIDs.push(tag._id);
-            }
-            else
+            } else {
                 tagIDs.push(existingTag[0]._id);
+            }
         }
         //Create new Question
         const question = new Question({
             title: param.title,
+            summary: param.summary,
             text: param.text,
             tags: tagIDs,
+            comments: [],
             answers: [],
             asked_by: param.asked_by,
             ask_date_time: new Date(),
-            views: 0
+            views: 0,
+            upvotes: 0,
+            downvotes: 0,
         });
 
         await question.save();
-        res.sendStatus(200);
+        res.json({question: question, tagIDs: tagIDs});
 
     } catch (error) {
         console.error("Failed to save question", error);
@@ -521,6 +530,26 @@ app.post("/api/tags", async (req, res) => {
         console.error("Failed to save tag", error);
     }
 })
+
+//Tag update created_by
+app.put("/api/tags", async (req, res) => {
+    try {
+        const { tags, user } = req.body;
+        //Find associate tag
+        //Push the users using tag into tag array
+        for (const tag of tags) {
+            const tag2 = await Tag.findById(tag);
+            tag2.created_by.push(user);
+            await tag2.save();
+        }
+        
+        res.sendStatus(200);
+
+    } catch (error) {
+        console.log("Failed to update tag created_by");
+    }
+})
+
 //Question Increment View Count Request
 app.put("/api/questions/:id", async (req, res) => {
     const questionID = req.params.id;
@@ -721,6 +750,51 @@ app.get("/api/users/profile", async (req, res) => {
         }
     } catch (error) {
         console.log("Failed to retrieve user info");
+    }
+})
+
+app.get("/api/users/profile/updateQuestion", async (req, res) => {
+    try {
+        //Attempt to retrieve user info
+        const sessionId = req.cookies.sessionID;
+        //Attempt to retrieve username
+        const username= req.cookies.username;
+        //Check that both exist
+        if (sessionId && username) {
+            //Find user from username
+            const user = await User.findOne({username});
+            if (user) {
+                res.json(user);
+            } else {
+                res.send("Failed to find user");
+            }
+        }
+    } catch (error) {
+        console.log("Failed to retrieve user info");
+    }
+})
+//Update questions_asked and tags_created array in associated question
+app.put("/api/users/profile/UpdateQuestion", async (req, res) => {
+    try {
+
+        const {question_asked, tags, user} = req.body;
+
+        // console.log(question_asked);
+
+        const acc = await User.findById(user);
+        // console.log(acc);
+        acc.questions_asked.push(question_asked);
+        
+        for (let tag of tags) {
+            acc.tags_created.push(tag);
+        }
+
+        await acc.save();
+
+        res.sendStatus(200);
+
+    } catch (error) {
+        console.log("Error updating question_asked");
     }
 })
 
