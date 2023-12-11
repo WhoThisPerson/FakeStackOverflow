@@ -36,10 +36,9 @@ app.use(session({
     secret: secretKey,
     resave: false,
     saveUninitialized: true,
-    rolling: true,
     cookie: {
         maxAge: 3600000,
-        secure: true,
+        secure: false,
         httpOnly: true,
     },
 }));
@@ -572,6 +571,7 @@ app.post("/api/users/login", async (req, res) => {
                 success: true,
                 message: "Login Success",
                 sessionID: req.sessionID,
+                username: user.username,
             });
         } else {
             res.json({
@@ -600,7 +600,8 @@ app.post("/api/users/logout", async (req, res) => {
         //Clear session on server
         req.session.destroy();
         //Remove cookie from client
-        res.clearCookie("sessionId");
+        res.clearCookie("sessionID");
+        res.clearCookie("username");
 
         res.json({
             success: true,
@@ -620,14 +621,23 @@ app.get("/api/users/logout", async (req, res) => {
         console.error("Failed to fetch questions", error);
     };
 })
-// // Get Profile Data
+// Get Profile Data
 app.get("/api/users/profile", async (req, res) => {
     try {
         //Attempt to retrieve user info
         const sessionId = req.cookies.sessionID;
-
-        console.log(sessionId);
-
+        //Attempt to retrieve username
+        const username= req.cookies.username;
+        //Check that both exist
+        if (sessionId && username) {
+            //Find user from username
+            const user = await User.findOne({username});
+            if (user) {
+                res.json(user);
+            } else {
+                res.send("Failed to find user");
+            }
+        }
     } catch (error) {
         console.log("Failed to retrieve user info");
     }

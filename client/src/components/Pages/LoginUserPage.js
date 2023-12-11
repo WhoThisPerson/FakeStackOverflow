@@ -43,9 +43,10 @@ export default function LoginUserPage({navigate}) {
   
             if (response.data.success) {
                 //Store data retrieved from response
-                const { sessionID } = response.data;
+                const { sessionID, username } = response.data;
                 //Store sessionId as a cookie
                 document.cookie = `sessionID=${sessionID}`;
+                document.cookie = `username=${username}`;
                 //Go to HomePage
                 navigate("Home", "HomePage", null);
             } else {
