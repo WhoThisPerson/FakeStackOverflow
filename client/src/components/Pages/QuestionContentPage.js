@@ -81,23 +81,7 @@ export default function QuestionContentPage({ navigate, parameters }) {
 
     //get the current batch of comments whenever the comment index changes
     useEffect(() => {
-        console.log("here");
-        const getQuestion = async () => {
-            try {
-                const response = await axios.get(`http://localhost:8000/api/questions/${question._id}`);
-
-                setVisibleComments(response.data.comments.slice(ans_index * 3, (ans_index + 1) * 3));
-                setComments(response.data.comments);
-
-                setVisibleAns(response.data.answers.slice(ans_index * 5, (ans_index + 1) * 5));
-                setAnswers(response.data.answers);
-
-            } catch (error) {
-                console.error("Failed to find question", error);
-            }
-        }
-
-        getQuestion();
+        fetchVisibileComments();
     }, [comment_index]);
 
     //to add the text to the state variable
@@ -114,7 +98,7 @@ export default function QuestionContentPage({ navigate, parameters }) {
 
         try {
 
-            const newComment = axios.post("http://localhost:8000/api/comments", { user: userInfo, qid: question._id, text: commentText });
+            const newComment = axios.post("http://localhost:8000/api/question_comments", { user: userInfo, qid: question._id, text: commentText });
             setCommentIndex(0);
         } catch (error) {
             console.error("Failed to post comment:", error);

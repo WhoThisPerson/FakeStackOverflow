@@ -442,7 +442,7 @@ app.post("/api/answers", async (req, res) => {
 })
 
 //Comment Post Request
-app.post("/api/comments", async (req, res) => {
+app.post("/api/question_comments", async (req, res) => {
     try{
         const {user, qid , text} = req.body;
 
