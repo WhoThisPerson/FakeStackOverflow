@@ -473,7 +473,7 @@ app.post("/api/question_comments", async (req, res) => {
         //Update question
         await question.save();
 
-        res.sendStatus(200);
+        res.send(comment);
 
     }catch(error)
     {
