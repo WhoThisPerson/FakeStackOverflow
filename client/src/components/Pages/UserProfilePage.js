@@ -5,16 +5,15 @@ import axios from "axios";
 export default function UserProfilePage({navigate}) {
 
     //Retrieve data from local storage
-    const [userInfo, setUserInfo] = useState([]);
+    const [userInfo, setUserInfo] = useState();
     //Will contain list of all Users for Admins
     const [userList, setUserList] = useState([]);
 
 
-    useEffect(() => {
-
+    useEffect( async () => {
+        setUserInfo("Hello");
     })
 
-    console.log(userInfo);
     //New Date Object
     let date;
     if (userInfo != null) {
@@ -25,20 +24,6 @@ export default function UserProfilePage({navigate}) {
     const logOut = async () => {
         //Delete Session
         //Make request to remove user session from server
-        try {
-
-            const response = await axios.post("http://localhost:8000/api/users/logout", { withCredentials: true });
-
-            if (response.data.success) {
-                //Go Back to WelcomePage
-                navigate("", "WelcomePage", null);
-            } else {
-                console.log("Failed to logout");
-            }
-            
-        } catch (error) {
-            console.log("Failed to logout");
-        }
     }
     return(
         <div className="user-profile-page">
