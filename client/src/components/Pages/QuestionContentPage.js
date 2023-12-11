@@ -59,7 +59,7 @@ export default function QuestionContentPage({ navigate, parameters }) {
 
                 const response = await axios.get(`http://localhost:8000/api/questions/${question._id}`);
 
-                setVisibleComments(response.data.comments.slice(ans_index * 3, (ans_index + 1) * 3));
+                setVisibleComments(response.data.comments.slice(comment_index * 3, (comment_index + 1) * 3));
                 setComments(response.data.comments);
 
                 setVisibleAns(response.data.answers.slice(ans_index * 5, (ans_index + 1) * 5));
@@ -235,7 +235,7 @@ export default function QuestionContentPage({ navigate, parameters }) {
             <div>
                 {/*Map Answers to Questions */}
                 {visible_ans.map((answer) => (
-                    <Answer key={answer._id} text={answer.text} ans_by={answer.ans_by} ans_date_time={answer.ans_date_time} />
+                    <Answer key={answer._id} id =  {answer._id} text={answer.text} ans_by={answer.ans_by} ans_date_time={answer.ans_date_time} />
                 ))}
 
                 {answerPageButtons()}
