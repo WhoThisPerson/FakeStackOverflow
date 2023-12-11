@@ -67,7 +67,7 @@ export default function UserProfilePage({navigate}) {
     }
     return(
         <div className="user-profile-page">
-            {userInfo ? (
+            {false ? (
                 //Registered User or Admin
                 <>
                     <div className="user-profile-header"> 
@@ -77,7 +77,7 @@ export default function UserProfilePage({navigate}) {
                         <h3>Member since: {formatMemberDate(date)}</h3>
 
                         <div className="user-profile-log-out-container">
-                            <button className="user-profile-log-out" onClick={logOut}>Log Out</button>
+                           {/* <button className="user-profile-log-out" onClick={logOut}>Log Out</button>*/}
                         </div>
                     </div>
                     {userInfo.role === "Admin" && (

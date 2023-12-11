@@ -13,7 +13,6 @@ export default function Comment({text, ans_by, comment_date_time}) {
             </div>
             <div className="answer-right">
                 <div className="answer-user">{ans_by}</div>
-                <div>Commented {formatDate(commentDate)}</div>
             </div>
 
         </div>  

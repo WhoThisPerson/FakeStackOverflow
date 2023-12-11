@@ -18,8 +18,7 @@ export default function SearchResultsPage({ navigate, parameters }) {
 
     //Retrieve and store questions
     useEffect(() => {
-
-        axios.get("http://localhost:8000/api/search", { params: { searched_tags, searched_words } })
+        axios.get("http://localhost:8000/api/search", {params: { searched_tags, searched_words }} )
             .then(response => {
                 setIndex(0);
                 setVisible(response.data.slice(index * 5, (index + 1) * 5));
@@ -53,7 +52,7 @@ export default function SearchResultsPage({ navigate, parameters }) {
         axios.get(`http://localhost:8000/api/searchbutton?sortBy=${sortBy}`, { params: { searched_tags, searched_words } })
             .then(response => {
                 //console.log(response.data);
-                //setVisible(response.data.slice(index * 5, (index + 1) * 5));
+                setVisible(response.data.slice(index * 5, (index + 1) * 5));
                 setQuestions(response.data);
             })
             .catch(error => {

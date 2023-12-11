@@ -91,7 +91,7 @@ export default class App extends React.Component {
   render() {
     return(
       <>
-        <Header navigate={this.navigate} />
+        {this.state.currentMainPage === "HomePage" && <Header currentPage={this.state.currentPage} navigate={this.navigate} />}
         <div className='main'>
           {this.state.currentMainPage === "HomePage" && <SideBar currentPage={this.state.currentPage} navigate={this.navigate}/>}
           <div className='right-margin'>

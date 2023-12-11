@@ -79,7 +79,8 @@ app.get("/api/questions", async (req, res) => {
 
 
         const sortedQuestions = questions;
-
+        console.log(sortedQuestions);
+        console.log("---------------");
         res.json(sortedQuestions);
     } catch (error) {
         console.error("Failed to fetch questions", error);
@@ -439,6 +440,38 @@ app.post("/api/answers", async (req, res) => {
         console.error("Failed to save answer", error);
     }
 })
+
+//Comment Post Request
+app.post("/api/comments", async (req, res) => {
+    try{
+        const {user, qid , text} = req.body;
+
+        //create new comment 
+        const comment = new Comment({
+            commenter: user,
+            text: text,
+        });
+
+        //save to comment collection
+        await comment.save();
+
+        //Retrieve ID
+        const commentID = comment._id;
+
+        //Push commentID to corresponding question comments array
+        const question = await Question.findById(qid)
+        question.comments.unshift(commentID);
+        //Update question
+        await question.save();
+
+        res.sendStatus(200);
+
+    }catch(error)
+    {
+        console.error("Failed to save comment", error);
+    }
+})
+
 //Tag Post Request
 app.post("/api/tags", async (req, res) => {
     try {
@@ -481,7 +514,9 @@ app.get("/api/questions/:id", async (req, res) => {
     try {
         const question = await Question.findById(questionID)
             .populate("tags")
-            .populate("answers");
+            .populate("answers")
+            .populate("comments");
+            //.populate("users");
         //Sort by Newest
         const sortedAnswers = question.answers.sort((a, b) => {
             return (b.ans_date_time - a.ans_date_time);
