@@ -19,12 +19,6 @@ export default function Answer({ id, text, ans_by, ans_date_time }) {
     const [commentText, setCommentText] = useState("");
 
     useEffect(() => {
-        //TODO: 
-        //get request to get all the comments for this answer
-        //store it in a state 
-        //add the index bs here too
-        //do a map to all the comments 
-
         const getComments = async () => {
             try {
                 setCommentIndex(0);
@@ -59,11 +53,30 @@ export default function Answer({ id, text, ans_by, ans_date_time }) {
         retrieveUserInfo();
     }, []);
 
+    //trigger when comments change 
+    useEffect(() => {
+        const getComments = async () => {
+            try {
+                setCommentIndex(0);
+
+                const response = await axios.get(`http://localhost:8000/api/answers/${id}`);
+
+                setVisibleComments(response.data.comments.slice(comment_index * 3, (comment_index + 1) * 3));
+                setComments(response.data.comments);
+
+            } catch (error) {
+                console.error("Failed to get answer's comments", error);
+            }
+        }
+
+        getComments();
+    }, [comments]);
+
     //get the current batch of comments whenever the comment index changes
     useEffect(() => {
         let comment_batch = [];
         //stop at 5 answers in the batch (index determines which 5)
-        comment_batch = comments.slice(comment_index * 3, (comment_index + 1) * 3)
+        comment_batch = comments.slice(comment_index * 3, (comment_index + 1) * 3);
 
         setVisibleComments(comment_batch);
     }, [comment_index]);
@@ -111,10 +124,15 @@ export default function Answer({ id, text, ans_by, ans_date_time }) {
         try {
 
             const newComment = axios.post("http://localhost:8000/api/answer_comments", { user: userInfo, aid: id, text: commentText });
-            //TODO: ask TA how to refresh this automatically
-            setCommentIndex(99);
-            console.log(comment_index);
+            console.log(newComment);
+            const new_arr = [...comments];
+            new_arr.unshift(newComment);
+
+            console.log(new_arr);
             setCommentIndex(0);
+            setComments(new_arr);
+            
+
         } catch (error) {
             console.error("Failed to post comment:", error);
         }
