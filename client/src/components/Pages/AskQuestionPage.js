@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { findLinks } from "../../util";
 
@@ -6,14 +6,20 @@ import { findLinks } from "../../util";
 export default function AskQuestionPage({ navigate }) {
     //state variables for all inputs to the question
     const [title, setTitle] = useState("");
+    const [summary, setSummary] = useState("");
     const [text, setText] = useState("");
     const [tags, setTags] = useState("");
-    const [username, setUsername] = useState("");
+    const [user, setUser] = useState();
+    const [reputation, setReputation] = useState(0);
 
     //storing input in the respective state variables
     const makingTitle = (event) => {
         setTitle(event.target.value);
     };
+
+    const makingSummary = (event) => {
+        setSummary(event.target.value);
+    }
 
     const makingText = (event) => {
         setText(event.target.value);
@@ -23,9 +29,23 @@ export default function AskQuestionPage({ navigate }) {
         setTags(event.target.value);
     };
 
-    const makingUsername = (event) => {
-        setUsername(event.target.value);
-    };
+    useEffect(() => {
+        const retrieveUserInfo = async () => {
+            try {
+                const response = await axios.get("http://localhost:8000/api/users/profile", {withCredentials: true});
+    
+                    if (response.data) {
+                        setUser(response.data._id);
+                        setReputation(response.data.reputation);
+                    } 
+    
+            } catch (error) {
+                console.log("Failed to retrieve user Info");
+            }
+        }
+
+        retrieveUserInfo();
+    }, []);
 
     //checks if the links in the text are valid
     const isValidLinks = (() => {
@@ -54,8 +74,12 @@ export default function AskQuestionPage({ navigate }) {
             alert("Title cannot be empty");
             return false;
         }
-        if (title.length > 100) {
-            alert("Title should not be greater than 100 words");
+        if (title.length > 50) {
+            alert("Title should not be greater than 50 characters");
+            return false;
+        }
+        if (summary.length > 140) {
+            alert("Summary should not be greater than 140 characters.");
             return false;
         }
         if (text.trim() == "") {
@@ -72,10 +96,6 @@ export default function AskQuestionPage({ navigate }) {
                 alert("Maximum number of tags is 5");
                 return false;
             }
-        }
-        if (username.trim() == "") {
-            alert("Username cannot be empty");
-            return false;
         }
         return true;
     });
@@ -97,14 +117,30 @@ export default function AskQuestionPage({ navigate }) {
             //Make request and post Question to questions collection
             const question = {
                 title: title,
+                summary: summary,
                 text: text,
                 tags: tagNames,
-                asked_by: username,
+                asked_by: user,
+                user_rep: reputation,
             };
-
-            await axios.post("http://localhost:8000/api/questions", { param: question });
-            
-            navigate("Home", "HomePage", null);
+            //response contains created question and associated tags that user is using
+            const response = await axios.post("http://localhost:8000/api/questions", { param: question });
+            console.log(response.data);
+            //Check user has enough reputation in server
+            if (response.data !== "Not enough reputation") {
+                try {
+                    //Update user's question's posted array
+                    //Update tag's created_by array
+                    await axios.put("http://localhost:8000/api/users/profile/UpdateQuestion", {question_asked: response.data.question, tags: response.data.tagIDs, user: user}, {withCredentials: true});
+                    await axios.put("http://localhost:8000/api/tags", {tags: response.data.tagIDs, user: user}, {withCredentials: true});
+                } catch (error) {
+                    console.log("Failed to update questions_asked or tags_created");
+                }
+                navigate("Home", "HomePage", null);
+            } else {
+                alert("Not enough reputation to add new tag");
+                return;
+            }
             
         } catch (error) {
             console.error("Error posting question", error);
@@ -117,9 +153,14 @@ export default function AskQuestionPage({ navigate }) {
         <div className="ask-question-page">
             <div>
                 <h2>Question Title*</h2>
-                <div className="question-req">Limit Title to 100 characters or less</div>
+                <div className="question-req">Limit Title to 50 characters or less</div>
                 <div className="title-box">
                     <input type="text" id="title-input" onChange={makingTitle}></input>
+                </div>
+                <h2>Question Summary*</h2>
+                <div className="question-req">Limit Summary to 140 characters or less</div>
+                <div className="summary-box">
+                    <input type="text" id="summary-input" onChange={makingSummary}></input>
                 </div>
                 <h2>Question Text*</h2>
                 <div className="question-box">
@@ -127,12 +168,9 @@ export default function AskQuestionPage({ navigate }) {
                 </div>
                 <h2>Tags*</h2>
                 <div className="question-req">Add keywords separated by whitespace</div>
+                <div className="question-req">50+ Reputation Points to Add New Tag</div>
                 <div className="tags-box">
                     <input type="text" id="tags-input" onChange={makingTags}></input>
-                </div>
-                <h2>Username*</h2>
-                <div>
-                    <input type="text" id="username-input" onChange={makingUsername}></input>
                 </div>
                 <button id="post-question-button" onClick={finishAsking}>Post Question</button>
             </div>
