@@ -53,14 +53,11 @@ export default function UserProfilePage({navigate}) {
     const logOut = async () => {
         //Delete Session
         //Make request to remove user session from server
-
         try {
             const response = await axios.post("http://localhost:8000/api/users/logout", null, {withCredentials: true});
-
             if (response.data.success) {
                 navigate("", "WelcomePage", null);
             }
-
         } catch (error) {
             console.log("Failed to logout");
         }
@@ -77,7 +74,7 @@ export default function UserProfilePage({navigate}) {
                         <h3>Member since: {formatMemberDate(date)}</h3>
 
                         <div className="user-profile-log-out-container">
-                            <button className="user-profile-log-out" onClick={logOut}>Log Out</button>
+                           <button className="user-profile-log-out" onClick={logOut}>Log Out</button>
                         </div>
                     </div>
                     {userInfo.role === "Admin" && (
