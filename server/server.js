@@ -472,6 +472,37 @@ app.post("/api/question_comments", async (req, res) => {
     }
 })
 
+//Comment Post Request
+app.post("/api/answer_comments", async (req, res) => {
+    try{
+        const {user, aid , text} = req.body;
+
+        //create new comment 
+        const comment = new Comment({
+            commenter: user,
+            text: text,
+        });
+
+        //save to comment collection
+        await comment.save();
+
+        //Retrieve ID
+        const commentID = comment._id;
+
+        //Push commentID to corresponding question comments array
+        const answer = await Answer.findById(aid)
+        answer.comments.unshift(commentID);
+        //Update question
+        await answer.save();
+
+        res.sendStatus(200);
+
+    }catch(error)
+    {
+        console.error("Failed to save comment", error);
+    }
+})
+
 //Tag Post Request
 app.post("/api/tags", async (req, res) => {
     try {
@@ -525,6 +556,20 @@ app.get("/api/questions/:id", async (req, res) => {
         question.answers = sortedAnswers;
 
         res.json(question);
+    } catch (error) {
+        console.error("Failed to find question", error);
+    }
+});
+
+//Answer's comments GET request
+app.get("/api/answers/:id", async (req, res) => {
+    const answerID = req.params.id;
+
+    try {
+        const answer = await Answer.findById(answerID)
+            .populate("comments");
+            //.populate("users");
+        res.json(answer);
     } catch (error) {
         console.error("Failed to find question", error);
     }
