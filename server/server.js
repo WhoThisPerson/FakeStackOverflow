@@ -367,7 +367,7 @@ app.post("/api/questions", async (req, res) => {
         const { param } = req.body;
         //stores the IDS of tags for the posted question
         const tagIDs = [];
-        console.log(param.reputation);
+        console.log(param.user_rep);
         for (const tagName of param.tags) {
             //Determine if tagName exists (remember that find returns an array)
             const existingTag = await Tag.find({ name: tagName });
@@ -375,7 +375,7 @@ app.post("/api/questions", async (req, res) => {
             //if the tag doesn't exist
             if (existingTag.length == 0) {
                 //Check if User has enough reputation to add new tag
-                if (param.reputation < 50) {
+                if (param.user_rep < 50) {
                     res.send("Not enough reputation");
                     return;
                 }

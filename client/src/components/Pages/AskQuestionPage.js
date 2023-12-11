@@ -125,7 +125,7 @@ export default function AskQuestionPage({ navigate }) {
             };
             //response contains created question and associated tags that user is using
             const response = await axios.post("http://localhost:8000/api/questions", { param: question });
-            console.log(response.data);
+            // console.log(response.data);
             //Check user has enough reputation in server
             if (response.data !== "Not enough reputation") {
                 try {
