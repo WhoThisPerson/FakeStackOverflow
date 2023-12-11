@@ -5,16 +5,15 @@ import axios from "axios";
 export default function UserProfilePage({navigate}) {
 
     //Retrieve data from local storage
-    const [userInfo, setUserInfo] = useState(null);
+    const [userInfo, setUserInfo] = useState();
     //Will contain list of all Users for Admins
     const [userList, setUserList] = useState([]);
 
 
-    useEffect(() => {
-        
+    useEffect( async () => {
+        setUserInfo("Hello");
     })
 
-    console.log(userInfo);
     //New Date Object
     let date;
     if (userInfo != null) {
@@ -22,12 +21,9 @@ export default function UserProfilePage({navigate}) {
     }
 
     //Handle Log out
-    const logOut = () => {
-        //Delete Session locally?
+    const logOut = async () => {
+        //Delete Session
         //Make request to remove user session from server
-        localStorage.removeItem("sessionId");
-        //Go Back to WelcomePage
-        navigate("", "WelcomePage", null);
     }
     return(
         <div className="user-profile-page">
