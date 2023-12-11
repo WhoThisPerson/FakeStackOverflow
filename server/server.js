@@ -645,7 +645,7 @@ app.get("/api/users/profile", async (req, res) => {
 
 
 ////DELETE Requests //////////////////////////////////////
-app.delete("/api/user", async (req, res) => {
+app.delete("/api/users", async (req, res) => {
     const { user_id } = req.body;
     try {
         const user_obj = await User.findById(user_id)
@@ -668,7 +668,7 @@ app.delete("/api/user", async (req, res) => {
             }
 
             //go thru every comment in question and delete it
-            for (const comment of question_obj.comments) {
+            for (const comment of question.comments) {
                 await Comment.deleteOne({ _id: comment._id });
             }
 
