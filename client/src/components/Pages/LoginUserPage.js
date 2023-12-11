@@ -39,13 +39,13 @@ export default function LoginUserPage({navigate}) {
         //Make request to log in
         try {
 
-            const response = await axios.post("http://localhost:8000/api/users/login", {email: email, password: password});
+            const response = await axios.post("http://localhost:8000/api/users/login", {email: email, password: password}, {withCredentials: true});
   
             if (response.data.success) {
                 //Store data retrieved from response
                 const { sessionID } = response.data;
-                //Store sessionId locally
-                localStorage.setItem("sessionId", sessionID);
+                //Store sessionId as a cookie
+                document.cookie = `sessionID=${sessionID}`;
                 //Go to HomePage
                 navigate("Home", "HomePage", null);
             } else {

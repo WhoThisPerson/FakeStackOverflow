@@ -24,8 +24,6 @@ const Tag = require('./models/tags');
 const User = require('./models/users');
 const { manageSearchedQuestions } = require('./utility');
 const Comment = require('./models/comments');
-const answers = require('./models/answers');
-const comments = require('./models/comments');
 
 //Middleware
 app.use(cors({
@@ -37,6 +35,7 @@ app.use(cookieParser());
 app.use(session({
     secret: secretKey,
     resave: false,
+    saveUninitialized: true,
     rolling: true,
     cookie: {
         maxAge: 3600000,
@@ -48,9 +47,10 @@ app.use(session({
 //Questions Get Request
 app.get("/api/questions", async (req, res) => {
     try {
-        let questions = Question.find()
+        let questions = await Question.find()
             .populate("tags")
-            .populate("answers");
+            .populate("answers")
+            .populate("comments");
         //Default sorting to Newest
         const sortBy = req.query.sortBy || "Newest";
         //New Posted Questions at Top
@@ -98,7 +98,7 @@ app.get("/api/answers", async (req, res) => {
 //Tags Get Request
 app.get("/api/tags", async (req, res) => {
     try {
-        const tags = await Tag.find();
+        const tags = await Tag.find().populate("created_by");
         res.json(tags);
     } catch (error) {
         console.error("Failed to fetch tags", error);
@@ -567,7 +567,7 @@ app.post("/api/users/login", async (req, res) => {
                 reputation: user.reputation,
                 date_created: user.date_created,
             };
-
+            console.log(req.sessionID);
             res.json({
                 success: true,
                 message: "Login Success",
@@ -594,6 +594,45 @@ app.get("/api/users/login", async (req, res) => {
         console.error("Failed to fetch questions", error);
     };
 })
+// Handle Logout
+app.post("/api/users/logout", async (req, res) => {
+    try {
+        //Clear session on server
+        req.session.destroy();
+        //Remove cookie from client
+        res.clearCookie("sessionId");
+
+        res.json({
+            success: true,
+            message: "Successfully Logged Out",
+        });
+    } catch (error) {
+        console.log("Failed to log out");
+    }
+})
+// Populate user Logout
+app.get("/api/users/logout", async (req, res) => {
+    try {
+        const users = await User.find();
+        res.json(users);
+
+    } catch (error) {
+        console.error("Failed to fetch questions", error);
+    };
+})
+// // Get Profile Data
+app.get("/api/users/profile", async (req, res) => {
+    try {
+        //Attempt to retrieve user info
+        const sessionId = req.cookies.sessionID;
+
+        console.log(sessionId);
+
+    } catch (error) {
+        console.log("Failed to retrieve user info");
+    }
+})
+
 
 ////DELETE Requests //////////////////////////////////////
 app.delete("/api/user", async (req, res) => {
