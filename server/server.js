@@ -578,6 +578,30 @@ app.put("/api/questions/:id", async (req, res) => {
     }
 })
 
+app.put("/api/questions/upvote/:id", async (req, res) => {
+    try {
+        const { questionId, userId } = req.body;
+        console.log(questionId);
+        console.log(userId);
+
+        const question = await Question.findOne({_id: questionId});
+
+        question.upvotes += 1;
+
+        await question.save();
+
+        const user = await User.findOne({_id: userId});
+
+        user.reputation += 5;
+
+        await user.save();
+
+        res.sendStatus(200);
+    } catch (error) {
+        console.log("Failed to update upvote");
+    }
+})
+
 //Question's Answers GET request
 app.get("/api/questions/:id", async (req, res) => {
     const questionID = req.params.id;
@@ -614,6 +638,19 @@ app.get("/api/answers/:id", async (req, res) => {
         console.error("Failed to find question", error);
     }
 });
+
+// app.get("/api/users/:id", async (req, res) => {
+//     const userId  = req.params.id;
+
+//     try {
+//         const user = await User.findById(userId)
+                                
+//         res.json(user);
+
+//     } catch (error) {
+//         console.log("Failed to find user");
+//     }
+// })
 
 //Users Get All Request
 app.get("/api/users", async (req, res) => {
@@ -812,40 +849,32 @@ app.put("/api/users/profile/UpdateQuestion", async (req, res) => {
 ////DELETE Requests //////////////////////////////////////
 app.delete("/api/users", async (req, res) => {
     try {
-        // const {userInfo} = req.body.params;
-        console.log(req.params);
-        // const user_obj = await User.findById(user_id)
-        //     .populate("questions_asked")
-        //     .populate("answers_posted");
+        const { user_id } = req.body;
+        //Find associated user
+        const user_obj = await User.findById(user_id)
+            .populate("questions_asked")
+            .populate("answers_posted");
 
-        
-
-        // //go thru every question that the user wrote
-        // for (let question of user_obj.questions_asked) {
-        //     //go thru every answer in the question
-        //     for (const answer of question.answers) {
-
-        //         //go thru every comment in the current answer
-        //         for (const comment of answer.comments) {
-        //             //delete the comment 
-        //             await Comment.deleteOne({ _id: comment._id });
-        //         }
-
-        //         //delete the answer
-        //         await Answer.deleteOne({ _id: answer._id });
-        //     }
-
-        //     //go thru every comment in question and delete it
-        //     for (const comment of question.comments) {
-        //         await Comment.deleteOne({ _id: comment._id });
-        //     }
-
-        //     //delete the question
-        //     await Question.deleteOne({ _id: question._id });
-        // }
-
-        // await User.deleteOne({_id : user_id});
-        
+        //go thru every question that the user wrote
+        for (let question of user_obj.questions_asked) {
+            //go thru every answer in the question
+            for (const answer of question.answers) {
+                //go thru every comment in the current answer
+                for (const comment of answer.comments) {
+                    //delete the comment 
+                    await Comment.deleteOne({ _id: comment._id });
+                }
+                //delete the answer
+                await Answer.deleteOne({ _id: answer._id });
+            }
+            //go thru every comment in question and delete it
+            for (const comment of question.comments) {
+                await Comment.deleteOne({ _id: comment._id });
+            }
+            //delete the question
+            await Question.deleteOne({ _id: question._id });
+        }
+        await User.deleteOne({_id : user_id});
         //send response back that everything went well
         res.sendStatus(200);
     } catch (error) {

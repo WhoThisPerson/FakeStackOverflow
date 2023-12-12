@@ -6,15 +6,13 @@ export default function User({navigate, user}) {
     const { username, _id } = user;
     //DeleteUser
     const deleteUser = async () => {
-        try {
-            console.log(_id);
-            const response = await axios.delete("http://localhost:8000/api/users", {user_id: _id}, {withCredentials: true});
 
-            if (response) {
-                console.log("Ok");
-            } else {
-                console.log("Failed to delete user");
-            }
+        const confirmation = window.confirm("Are you sure you want to delete this user?");
+
+        if (!confirmation) return;
+
+        try {
+            await axios.delete("http://localhost:8000/api/users", {data: {user_id: _id}}, {withCredentials: true});
 
         } catch (error) {
             console.log("Failed to delete user");

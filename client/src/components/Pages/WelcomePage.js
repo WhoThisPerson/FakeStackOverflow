@@ -17,9 +17,9 @@ export default function WelcomePage({navigate}) {
 
     return (
         <div className="welcome-page">
-
+            <h1 className="welcome-page-title">Welcome to Fake Stack Overflow</h1>
             <div className="welcome-page-container">
-
+                
                 <div className="register-button-container">
                     <button className="register-button" onClick={registerUser}>Register</button>
                 </div>

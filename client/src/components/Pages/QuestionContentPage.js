@@ -12,7 +12,6 @@ export default function QuestionContentPage({ navigate, parameters }) {
     const [userInfo, setUserInfo] = useState(null);
     //Create Date object to format
     const askDate = new Date(question.ask_date_time);
-
     //Store and update any new comments 
     const [comments, setComments] = useState([]);
     //state to store the comment that the user is typing
@@ -21,14 +20,14 @@ export default function QuestionContentPage({ navigate, parameters }) {
     const [visible_comments, setVisibleComments] = useState([]);
     //current "index" for the answers (aka which group of 5 answers are in visible at the moment)
     const [comment_index, setCommentIndex] = useState(0);
-
     //Store and update any new answers
     const [answers, setAnswers] = useState([]);
     //the answers that are currently visible to the user
     const [visible_ans, setVisibleAns] = useState([]);
     //current "index" for the answers (aka which group of 5 answers are in visible at the moment)
     const [ans_index, setAnsIndex] = useState(0);
-
+    //Store username
+    const [username, setUsername] = useState("");
     //Retrieve userInfo
     useEffect(() => {
         const retrieveUserInfo = async () => {
@@ -37,6 +36,7 @@ export default function QuestionContentPage({ navigate, parameters }) {
 
                 if (response.data) {
                     setUserInfo(response.data);
+                    setUsername(response.data.username);
                 } else {
                     setUserInfo(null);
                 }
@@ -239,7 +239,7 @@ export default function QuestionContentPage({ navigate, parameters }) {
                     <div className="aks-question-button-container">
                         {userInfo ? (<button className="ask-question-button" onClick={askQuestion}>Ask Question</button>) : (<></>)}
                     </div>
-                    <div className="question-content-askedBy">{question.asked_by}</div>
+                    <div className="question-content-askedBy">{username}</div>
                     <div>asked {formatDate(askDate)}</div>
                 </div>
             </div>
