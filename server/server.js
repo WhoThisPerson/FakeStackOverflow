@@ -367,7 +367,7 @@ app.post("/api/questions", async (req, res) => {
         const { param } = req.body;
         //stores the IDS of tags for the posted question
         const tagIDs = [];
-        console.log(param.reputation);
+        console.log(param.user_rep);
         for (const tagName of param.tags) {
             //Determine if tagName exists (remember that find returns an array)
             const existingTag = await Tag.find({ name: tagName });
@@ -375,7 +375,7 @@ app.post("/api/questions", async (req, res) => {
             //if the tag doesn't exist
             if (existingTag.length == 0) {
                 //Check if User has enough reputation to add new tag
-                if (param.reputation < 50) {
+                if (param.user_rep < 50) {
                     res.send("Not enough reputation");
                     return;
                 }
@@ -421,7 +421,10 @@ app.post("/api/answers", async (req, res) => {
         const answer = new Answer({
             text: text,
             ans_by: ans_by,
+            comments: [],
             ans_date_time: ans_date_time,
+            upvotes: 0,
+            downvotes: 0,
         });
         //Save to answers collection
         await answer.save();
@@ -442,6 +445,13 @@ app.post("/api/answers", async (req, res) => {
         })
 
         updatedQuestion.answers = sortedAnswers;
+
+        //Find user
+        const user = await User.findById(ans_by);
+        //Push answerID into User array
+        user.answers_posted.push(answerID);
+        //Save
+        await user.save();
 
         res.json(updatedQuestion);
 
@@ -801,11 +811,14 @@ app.put("/api/users/profile/UpdateQuestion", async (req, res) => {
 
 ////DELETE Requests //////////////////////////////////////
 app.delete("/api/users", async (req, res) => {
-    const { user_id } = req.body;
     try {
+        const { user_id } = req.body;
+        
         const user_obj = await User.findById(user_id)
-            .populate("questions")
-            .populate("answers");
+            .populate("questions_asked")
+            .populate("answers_posted");
+
+        
 
         //go thru every question that the user wrote
         for (let question of user_obj.questions_asked) {

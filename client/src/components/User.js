@@ -4,15 +4,12 @@ import axios from "axios";
 export default function User({navigate, user}) {
 
     const { username, _id } = user;
-
-    console.log(_id);
-
     //DeleteUser
     const deleteUser = async () => {
         try {
+            console.log(_id);
             const response = await axios.delete("http://localhost:8000/api/users", {user_id: _id}, {withCredentials: true});
 
-            console.log(response);
             if (response) {
                 console.log("Ok");
             } else {
