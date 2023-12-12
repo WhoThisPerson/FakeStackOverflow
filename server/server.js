@@ -812,39 +812,39 @@ app.put("/api/users/profile/UpdateQuestion", async (req, res) => {
 ////DELETE Requests //////////////////////////////////////
 app.delete("/api/users", async (req, res) => {
     try {
-        const { user_id } = req.body;
-        
-        const user_obj = await User.findById(user_id)
-            .populate("questions_asked")
-            .populate("answers_posted");
+        // const {userInfo} = req.body.params;
+        console.log(req.params);
+        // const user_obj = await User.findById(user_id)
+        //     .populate("questions_asked")
+        //     .populate("answers_posted");
 
         
 
-        //go thru every question that the user wrote
-        for (let question of user_obj.questions_asked) {
-            //go thru every answer in the question
-            for (const answer of question.answers) {
+        // //go thru every question that the user wrote
+        // for (let question of user_obj.questions_asked) {
+        //     //go thru every answer in the question
+        //     for (const answer of question.answers) {
 
-                //go thru every comment in the current answer
-                for (const comment of answer.comments) {
-                    //delete the comment 
-                    await Comment.deleteOne({ _id: comment._id });
-                }
+        //         //go thru every comment in the current answer
+        //         for (const comment of answer.comments) {
+        //             //delete the comment 
+        //             await Comment.deleteOne({ _id: comment._id });
+        //         }
 
-                //delete the answer
-                await Answer.deleteOne({ _id: answer._id });
-            }
+        //         //delete the answer
+        //         await Answer.deleteOne({ _id: answer._id });
+        //     }
 
-            //go thru every comment in question and delete it
-            for (const comment of question.comments) {
-                await Comment.deleteOne({ _id: comment._id });
-            }
+        //     //go thru every comment in question and delete it
+        //     for (const comment of question.comments) {
+        //         await Comment.deleteOne({ _id: comment._id });
+        //     }
 
-            //delete the question
-            await Question.deleteOne({ _id: question._id });
-        }
+        //     //delete the question
+        //     await Question.deleteOne({ _id: question._id });
+        // }
 
-        await User.deleteOne({_id : user_id});
+        // await User.deleteOne({_id : user_id});
         
         //send response back that everything went well
         res.sendStatus(200);

@@ -3,7 +3,6 @@ import axios from "axios";
 import Question from "../Question";
 import ButtonsContainer from "../ButtonsContainer";
 
-//TODO: check why searching for [c] bugs out results
 export default function SearchResultsPage({ navigate, parameters }) {
     //store the parameters
     const { searched_tags, searched_words } = parameters;

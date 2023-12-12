@@ -15,4 +15,10 @@ Add design docs in *images/*
 - Looks
 
 ## Team Member 2 Contribution (B2 David Yeung)
+-Limiting 5 questions on the Home / Search Results Page
+-Limiting 5 Answers on Question Content Page
+-Limiting 3 Comments per Object
+-Added Posting Comments Functionality 
+-Buttons on Search Results Page only work on the results 
+-Hid Post Question and Post Answer buttons when a guest is logged in
 

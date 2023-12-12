@@ -67,6 +67,16 @@ export default function UserProfilePage({navigate}) {
         navigate("AskQuestion", "HomePage", {question});
     }
 
+    const testDelete = () => {
+        try{
+            console.log(userInfo);
+            axios.delete("http://localhost:8000/api/users", {params : {userInfo}});
+        }catch(error)
+        {
+            console.error("Failed to delete.");
+        }
+    }
+
     //New Date Object
     let date;
     if (userInfo != null) {
