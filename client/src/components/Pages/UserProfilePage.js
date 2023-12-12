@@ -48,7 +48,7 @@ export default function UserProfilePage({navigate}) {
             }
         }
         retrieveUserList();
-    }, []);
+    }, [userList]);
 
     const getQuestionName = async () => {
 

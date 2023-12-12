@@ -1,7 +1,22 @@
 /* Welcome Page elements*/
 .welcome-page-container{
     display: flex;
+    justify-content: center;
 }
+.welcome-page-title {
+    text-align: center;
+}
+.register-button, .login-button, .guest-button {
+    padding: 15px;
+    color: white;
+    background-color: #0096ff;
+    font-size: large;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+/* Register User Page */
+
 
 /* Header Element */
 .header {

@@ -17,6 +17,8 @@ export default function Answer({ id, text, ans_by, ans_date_time }) {
     const [comment_index, setCommentIndex] = useState(0);
     //state to store the comment that the user is typing
     const [commentText, setCommentText] = useState("");
+    //answerer
+    const [answerer, setAnswerer] = useState("");
 
     useEffect(() => {
         const getComments = async () => {
@@ -27,7 +29,7 @@ export default function Answer({ id, text, ans_by, ans_date_time }) {
 
                 setVisibleComments(response.data.comments.slice(comment_index * 3, (comment_index + 1) * 3));
                 setComments(response.data.comments);
-
+                
             } catch (error) {
                 console.error("Failed to get answer's comments", error);
             }
@@ -78,6 +80,18 @@ export default function Answer({ id, text, ans_by, ans_date_time }) {
 
         setVisibleComments(comment_batch);
     }, [comment_index]);
+
+    // useEffect(async () => {
+    //     try {
+    //         const id = ans_by;
+    //         const response = await axios.get(`http://localhost:8000/api/users/${ans_by}`);
+
+    //         setAnswerer(response.data.username);
+
+    //     } catch (error) {
+    //         console.log("Failed to find user");
+    //     }
+    // }, []);
 
     //makes the prev/next buttons based on index 
     const commentPageButtons = (() => {
@@ -148,7 +162,7 @@ export default function Answer({ id, text, ans_by, ans_date_time }) {
                 </div>
             </div>
             <div className="answer-right">
-                <div className="answer-user">{ans_by}</div>
+                <div className="answer-user">{answerer}</div>
                 <div>answered {formatDate(ansDate)}</div>
             </div>
 
