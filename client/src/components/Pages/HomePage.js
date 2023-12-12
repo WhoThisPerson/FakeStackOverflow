@@ -5,6 +5,7 @@ import axios from "axios";
 
 export default function HomePage({ navigate }) {
 
+    
     //collection of all questions in the database
     const [questions, setQuestions] = useState([]);
     //the questions that are currently visible to the user

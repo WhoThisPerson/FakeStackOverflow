@@ -145,6 +145,7 @@ export default function QuestionContentPage({ navigate, parameters }) {
 
     //makes the prev/next buttons based on index 
     const commentPageButtons = (() => {
+        //console.log(userInfo);
         //if there are 3 or less comments, only one page is needed
         if (comments.length <= 3)
             return;
@@ -178,7 +179,7 @@ export default function QuestionContentPage({ navigate, parameters }) {
         ans_batch = answers.slice(ans_index * 5, (ans_index + 1) * 5)
 
         setVisibleAns(ans_batch);
-        console.log(answers);
+        
     })
 
     //makes the prev/next buttons based on index 
@@ -236,7 +237,7 @@ export default function QuestionContentPage({ navigate, parameters }) {
 
                 <div className="question-content-right">
                     <div className="aks-question-button-container">
-                        <button onClick={askQuestion} className="ask-question-button">Ask Question</button>
+                        {userInfo ? (<button className="ask-question-button" onClick={askQuestion}>Ask Question</button>) : (<></>)}
                     </div>
                     <div className="question-content-askedBy">{question.asked_by}</div>
                     <div>asked {formatDate(askDate)}</div>
@@ -253,12 +254,13 @@ export default function QuestionContentPage({ navigate, parameters }) {
                 </div>
                 
 
-                <input type = "text"
+                {userInfo ? (<input type = "text"
                     value = {commentText}
                     rows={2} cols={10} id="post-answer-page-text-input"
                     onKeyDown={onEnterKey}
                     onChange={onInputChange}
-                ></input>
+                ></input>) : (<></>)}
+                
             </div>
 
             <hr></hr>
@@ -273,7 +275,11 @@ export default function QuestionContentPage({ navigate, parameters }) {
             </div>
 
             <div className="answer-question-button-container">
-                <button onClick={postAnswer} className="answer-question-button">Answer Question</button>
+                {
+                    userInfo ? 
+                    (<button onClick={postAnswer} className="answer-question-button">Answer Question</button>) :
+                    (<button className="answer-question-button">Please Login to Post An Answer</button>)
+                }
             </div>
 
             

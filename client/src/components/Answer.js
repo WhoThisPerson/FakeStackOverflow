@@ -131,7 +131,7 @@ export default function Answer({ id, text, ans_by, ans_date_time }) {
             setCommentIndex(0);
             setComments(new_arr);
 
-
+            console.log(comments);
             setCommentText("");
             
 
@@ -161,12 +161,13 @@ export default function Answer({ id, text, ans_by, ans_date_time }) {
                     {commentPageButtons()}
                 </div>
 
-                <input type = "text"
+                {userInfo ? (<input type = "text"
                 value = {commentText}
                     rows={4} cols={5} id="post-answer-page-text-input"
                     onKeyDown={onEnterKey}
                     onChange={onInputChange}
-                ></input>
+                ></input>) : (<></>)}
+                
 
             </div>
 
