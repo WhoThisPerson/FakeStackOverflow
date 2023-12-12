@@ -2,8 +2,8 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { findLinks } from "../../util";
 
-//TODO: post question is not posting due to changes to database. Make sure to fix 
-export default function AskQuestionPage({ navigate }) {
+export default function AskQuestionPage({ navigate, question }) {
+
     //state variables for all inputs to the question
     const [title, setTitle] = useState("");
     const [summary, setSummary] = useState("");
@@ -155,16 +155,16 @@ export default function AskQuestionPage({ navigate }) {
                 <h2>Question Title*</h2>
                 <div className="question-req">Limit Title to 50 characters or less</div>
                 <div className="title-box">
-                    <input type="text" id="title-input" onChange={makingTitle}></input>
+                    <input type="text" id="title-input" onChange={makingTitle} value={title}></input>
                 </div>
                 <h2>Question Summary*</h2>
                 <div className="question-req">Limit Summary to 140 characters or less</div>
                 <div className="summary-box">
-                    <input type="text" id="summary-input" onChange={makingSummary}></input>
+                    <input type="text" id="summary-input" onChange={makingSummary} value={summary}></input>
                 </div>
                 <h2>Question Text*</h2>
                 <div className="question-box">
-                    <textarea rows={4} cols={10} id="question-input" onChange={makingText}></textarea>
+                    <textarea rows={4} cols={10} id="question-input" onChange={makingText} value={text}></textarea>
                 </div>
                 <h2>Tags*</h2>
                 <div className="question-req">Add keywords separated by whitespace</div>

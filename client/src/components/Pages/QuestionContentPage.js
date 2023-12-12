@@ -78,6 +78,26 @@ export default function QuestionContentPage({ navigate, parameters }) {
         fetchVisibileAnswers()
     }, [ans_index]);
 
+    //trigger when comments change 
+    useEffect(() => {
+        const getComments = async () => {
+            try {
+                const response = await axios.get(`http://localhost:8000/api/questions/${question._id}`);
+
+                setVisibleComments(response.data.comments.slice(comment_index * 3, (comment_index + 1) * 3));
+                setComments(response.data.comments);
+
+                setVisibleAns(response.data.answers.slice(ans_index * 5, (ans_index + 1) * 5));
+                setAnswers(response.data.answers);
+
+            } catch (error) {
+                console.error("Failed to get answer's comments", error);
+            }
+        }
+
+        getComments();
+    }, [comments]);
+
     //get the current batch of comments whenever the comment index changes
     useEffect(() => {
         fetchVisibileComments();
@@ -98,7 +118,17 @@ export default function QuestionContentPage({ navigate, parameters }) {
         try {
 
             const newComment = axios.post("http://localhost:8000/api/question_comments", { user: userInfo, qid: question._id, text: commentText });
-            //TODO: ask TA how to refresh this automatically
+            //add it to the comments state
+            const new_arr = [...comments];
+            new_arr.unshift(newComment);
+
+            //reset index to 0
+            setCommentIndex(0);
+            setComments(new_arr);
+
+
+            setCommentText("");
+            
         } catch (error) {
             console.error("Failed to post comment:", error);
         }
@@ -126,7 +156,7 @@ export default function QuestionContentPage({ navigate, parameters }) {
         if (comment_index === 0) {
             return <button className="newest" onClick={() => setCommentIndex(comment_index + 1)}>Next</button>
         }
-        else if ((comment_index + 1) * 3 > comments.length) {
+        else if ((comment_index + 1) * 3 >= comments.length) {
             return <>
                 <button className="newest" onClick={() => setCommentIndex(comment_index - 1)}>Prev</button>
                 <button className="newest" onClick={() => setCommentIndex(0)}>Next</button>
@@ -164,7 +194,7 @@ export default function QuestionContentPage({ navigate, parameters }) {
         if (ans_index === 0) {
             return <button className="newest" onClick={() => setAnsIndex(ans_index + 1)}>Next</button>
         }
-        else if ((ans_index + 1) * 5 > answers.length) {
+        else if ((ans_index + 1) * 5 >= answers.length) {
             return <>
                 <button className="newest" onClick={() => setAnsIndex(ans_index - 1)}>Prev</button>
                 <button className="newest" onClick={() => setAnsIndex(0)}>Next</button>
@@ -223,11 +253,12 @@ export default function QuestionContentPage({ navigate, parameters }) {
                 </div>
                 
 
-                <textarea
-                    rows={4} cols={400} id="post-answer-page-text-input"
+                <input type = "text"
+                    value = {commentText}
+                    rows={2} cols={10} id="post-answer-page-text-input"
                     onKeyDown={onEnterKey}
                     onChange={onInputChange}
-                ></textarea>
+                ></input>
             </div>
 
             <hr></hr>

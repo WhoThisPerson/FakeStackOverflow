@@ -483,7 +483,7 @@ app.post("/api/question_comments", async (req, res) => {
         //Update question
         await question.save();
 
-        res.sendStatus(200);
+        res.send(comment);
 
     }catch(error)
     {
@@ -813,9 +813,12 @@ app.put("/api/users/profile/UpdateQuestion", async (req, res) => {
 app.delete("/api/users", async (req, res) => {
     try {
         const { user_id } = req.body;
+        
         const user_obj = await User.findById(user_id)
             .populate("questions_asked")
             .populate("answers_posted");
+
+        
 
         //go thru every question that the user wrote
         for (let question of user_obj.questions_asked) {
