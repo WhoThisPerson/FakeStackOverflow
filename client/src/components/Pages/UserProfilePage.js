@@ -8,6 +8,9 @@ export default function UserProfilePage({navigate}) {
     const [userInfo, setUserInfo] = useState(null);
     //Will contain list of all Users for Admins
     const [userList, setUserList] = useState([]);
+    const [questionsAsked, setQuestionsAsked] = useState([]);
+    const [answersPosted, setAnswerPosted] = useState([]);
+    const [tagsCreated, setTagsCreated] = useState([]);
     //Retrieve userInfo
     useEffect(() => {
         const retrieveUserInfo = async () => {
@@ -16,6 +19,9 @@ export default function UserProfilePage({navigate}) {
 
                 if (response.data) {
                     setUserInfo(response.data);
+                    setQuestionsAsked(response.data.questions_asked);
+                    setAnswerPosted(response.data.answers_posted);
+                    setTagsCreated(response.data.tags_created);
                 } else {
                     setUserInfo(null);
                 }
@@ -43,6 +49,23 @@ export default function UserProfilePage({navigate}) {
         }
         retrieveUserList();
     }, []);
+
+    const getQuestionName = async () => {
+
+    }
+
+    const getAnswerName = async () => {
+
+    }
+
+    const getTagName = async () => {
+
+    }
+    //Go to Question Page
+    //Can modify and delete question there
+    const openAskQuestionPage = (question) => {
+        navigate("AskQuestion", "HomePage", {question});
+    }
 
     //New Date Object
     let date;
@@ -86,7 +109,20 @@ export default function UserProfilePage({navigate}) {
                     )}
                     {userInfo.role === "User" && (
                         <div className="user-profile-user">
-                            <h1>User Content</h1>
+                            <h3>Questions:</h3>
+                            {questionsAsked.map((question, num) => (
+                                <>
+                                    <div key={question._id} onClick={() => openAskQuestionPage(question)}>{`Question ${num + 1}`}</div>
+                                </>
+                            ))}
+                            <div>
+                                <a href="#">View Answers</a>
+                            </div>
+
+                            <div>
+                                <a href="#">View Tags In Use</a>
+                            </div>
+                        
                         </div>
                     )}
                 </>

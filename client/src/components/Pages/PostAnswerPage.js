@@ -93,11 +93,9 @@ export default function PostAnswerPage({navigate, parameters}) {
         //Create Answer
         //Post Answer to answers collection
         try {
-
-            const newAnswer = await axios.post("http://localhost:8000/api/answers", 
-            { text: text, ans_by: username, ans_date_time: new Date(), questionID : question._id});
-
-            
+            //Post to Answers collection
+            const response = await axios.post("http://localhost:8000/api/answers", 
+            { text: text, ans_by: username, ans_date_time: new Date(), questionID : question._id});           
 
             navigate("QuestionContentPage", "HomePage", { question });
 
